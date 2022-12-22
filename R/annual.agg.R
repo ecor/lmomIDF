@@ -1,0 +1,101 @@
+NULL
+#' Annual (maxima or minima) aggregation
+#' 
+#' 
+#' @param x vector or time series
+#' @param time vector of time index (e.g. \code{Date} or \code{POSIXct})
+#' @param index index aggregation vector. Default is 
+#' @param aggr.fun atomic aggregation function (e.g. \code{\link{max}} or \code{\link{min}}), accepting \code{na.rm} argument.
+#' @param na.rm argument for \code{aggr.fun}
+#' @param dd duration for the moving window. More than 1 duration can be assigned.
+#' @param dd_formatter string formatter for duration in the function value
+#' @param numeric_dd logical. Default is \code{TRUE}.
+#' @param numeric_index logical. Default is \code{FALSE}.
+#' @param format argument for \code{\link{as.character}} used to create \code{index} from \code{time}.
+#' @param aggr.name,dd.name,index.name optional column mane of function results. See function usage.
+#' @param filter,method,sides,... further arguments for \code{stats::\link[stats]{filter}}
+#'
+#' @seealso \code{stats::\link[stats]{filter}},\code{\link{max}},\code{\link{min}}
+#' 
+#' @return a data frame or similar with index (e,g. year or year-month), duration (column name: \code{"dd"})  
+#' and the aggregated value  (column name: \code{"aggr"})
+#' @export
+#' 
+#' @importFrom magrittr %>%
+#' @importFrom stringr str_replace_all
+#' @importFrom reshape2 melt
+#' @importFrom dplyr .data group_by summarize ungroup
+#' @examples 
+#' 
+#' library(RMAWGEN)
+#' data(trentino)
+#' time <- as.Date(sprintf("%04d-%02d-%02d",PRECIPITATION$year,
+#' PRECIPITATION$month,PRECIPITATION$day),format="%Y-%m-%d")
+#' x <- PRECIPITATION$B8570
+#'
+#' out <- annual.agg(x,time)
+#' out2 <- yearly.agg(x,time)
+#' 
+#' library(lmom)
+#' library(dplyr)
+#' outp <- out %>% filter(dd==2)
+#' evplot(outp)
+#' 
+#' 
+
+annual.agg <- function(x,time,index=as.character(time,format=format),dd=c(1,2,5),aggr.fun="max",na.rm=TRUE,
+                       format="%Y",dd_formatter="D%03d",numeric_dd=TRUE,numeric_index=FALSE,aggr.name="aggr",dd.name="dd",index.name="index",filter=lapply(dd,function(dd){rep(1,dd)/dd}),method="convolution",sides=1,...) {
+  
+  cond1 <- all(diff(time)==diff(time)[1])
+  if (!cond1) {
+    stop("time must have constant intervals")
+  }
+  
+  out <- NULL
+  ##
+  time <- sort(time)
+  x <- x[order(time)]
+  index <- index[order(time)]
+  
+  ##
+  if (!is.list(filter)) filter <- list(filter)
+  if (length(dd)==length(filter)) names(filter) <- sprintf(dd_formatter,dd)
+  out <- lapply(FUN=stats::filter,x=x,filter,method=method,sides=sides,...) 
+  out <- lapply(out,FUN=as.numeric)
+  out <- as.data.frame(out)
+  out$time <- time
+  out$index <- index ## as.character(out$time,format=format)
+  out <- reshape2::melt(out,id=c("time","index"))
+  names(out)[names(out)=="variable"] <- "dd"
+ 
+
+  ######
+  ######
+  if (is.character(aggr.fun)) aggr.fun <- get(aggr.fun)
+  #out <- 
+  ######
+  out <- out %>% group_by(.data$dd,.data$index) %>% summarize(aggr=aggr.fun(.data$value,na.rm=na.rm)) %>% ungroup()
+  if (numeric_dd) out$dd <- as.character(out$dd) %>% str_replace_all("[A-Z]","") %>% str_replace_all("[a-z]","") %>% as.numeric()
+  if (numeric_index) out$index <- as.character(out$index) %>% str_replace_all("[A-Z]","") %>% str_replace_all("[a-z]","") %>% as.numeric()
+  ###
+  iaggr  <- which(names(out)=="aggr")
+  idd    <- which(names(out)=="dd")
+  iindex <- which(names(out)=="index")
+  ###
+  names(out)[iaggr] <- aggr.name
+  names(out)[idd] <- dd.name
+  names(out)[iindex] <- index.name
+  ###
+  return(out)
+}
+
+NULL
+#'
+#' @rdname annual.agg
+#' @export
+#' 
+yearly.agg <- function(x,time,...) {
+  
+  out <- annual.agg(x,time,...)
+  return(out)
+}
