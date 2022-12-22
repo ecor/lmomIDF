@@ -8,21 +8,42 @@ NULL
 #'
 #' @example 
 #' 
-#' 
+#' ## TO DO
 #' 
 
-annual.agg.pel <- function(distrib=c("exp","gam","gev","glo","gpa","gno","gum","kap","ln3","nor","pe3","wak","wei"),
-                  x=x,lmom=lmom,...         
+annual.agg.pel <- function(distrib=c("exp","gam","gev","glo","gpa","gno","gum","kap","ln3","nor","pe3","wak","wei")[3],
+                  x=x,lmom=lmom,dd.name="dd",dd_formatter="D%03d",aggr.name="aggr",
+                          alternative = c("two.sided", "less", "greater"),
+                          exact = NULL,
+                  ...         
 ) {
   
-  out <- NULL
+  ##lwhich(names(lmom)==dd.name)
+  distrib <- distrib[1]
+  dds <- out[,dd.name]
+  names(dds) <- sprintf(dd_formatter,dds)
   
+  
+  out <- apply(out,MARGIN=1,FUN=pel_lmom,distrib=distrib,simplify=FALSE)
+  names(out) <- names(dds)
+  ###
+
+  
+  ####
+  x <- as.data.frame(x)
+  for(it in names(dds)) {
+    xval <- x[which(x[,dd.name]==dds[it]),aggr.name]
+    attr(out[[it]],"ks.test") <- ks.test(x=xval,y=cdf,para=out[[it]],alternative = alternative,exact=exact)
+  }  
+
   
   ###  
   ###  
   ### 
   return(out) 
 }
+
+
 NULL
 
 #' @rdname annual.agg.pel
