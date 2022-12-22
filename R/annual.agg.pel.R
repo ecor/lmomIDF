@@ -12,10 +12,12 @@ NULL
 #' 
 
 annual.agg.pel <- function(distrib=c("exp","gam","gev","glo","gpa","gno","gum","kap","ln3","nor","pe3","wak","wei"),
-                  x=x,lmom=lmom         
+                  x=x,lmom=lmom,...         
 ) {
   
   out <- NULL
+  
+  
   ###  
   ###  
   ### 
