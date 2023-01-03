@@ -48,7 +48,7 @@ yearly.agg(x, time, ...)
 
 \item{numeric_index}{logical. Default is \code{FALSE}.}
 
-\item{aggr.name, dd.name, index.name}{optional column mane of function results. See function usage.}
+\item{aggr.name, dd.name, index.name}{optional column names of function results. See function usage.}
 
 \item{filter, method, sides, ...}{further arguments for \code{stats::\link[stats]{filter}}}
 }
@@ -73,7 +73,7 @@ out2 <- yearly.agg(x,time)
 library(lmom)
 library(dplyr)
 outp <- out \%>\% filter(dd==2)
-evplot(outp)
+evplot(outp$aggr)
 
 
 }

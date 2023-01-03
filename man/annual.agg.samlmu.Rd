@@ -2,12 +2,12 @@
 % Please edit documentation in R/annual.agg.samlmu.R
 \name{annual.agg.samlmu}
 \alias{annual.agg.samlmu}
-\alias{yearly.agg.sam.samlmu}
+\alias{yearly.agg.samlmu}
 \title{Sample L-Moments of annual maxima or minima values}
 \usage{
 annual.agg.samlmu(x, aggr.name = "aggr", dd.name = "dd", ...)
 
-yearly.agg.sam.samlmu(x, ...)
+yearly.agg.samlmu(x, ...)
 }
 \arguments{
 \item{x}{object returned by \code{\link{annual.agg}} or \code{\link{yearly.agg}}}
@@ -27,7 +27,11 @@ time <- as.Date(sprintf("\%04d-\%02d-\%02d",PRECIPITATION$year,
 PRECIPITATION$month,PRECIPITATION$day),format="\%Y-\%m-\%d")
 x <- PRECIPITATION$B8570
 
-y <- annual.agg(x,time) 
+y <- annual.agg(x,dd=1:10,time)
 out <- annual.agg.samlmu(y)
+
+lmrd(out)
+
+summary(lm(log(l_1) ~ log(dd),data=out))
 
 }

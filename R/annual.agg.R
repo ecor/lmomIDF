@@ -12,7 +12,7 @@ NULL
 #' @param numeric_dd logical. Default is \code{TRUE}.
 #' @param numeric_index logical. Default is \code{FALSE}.
 #' @param format argument for \code{\link{as.character}} used to create \code{index} from \code{time}.
-#' @param aggr.name,dd.name,index.name optional column mane of function results. See function usage.
+#' @param aggr.name,dd.name,index.name optional column names of function results. See function usage.
 #' @param filter,method,sides,... further arguments for \code{stats::\link[stats]{filter}}
 #'
 #' @seealso \code{stats::\link[stats]{filter}},\code{\link{max}},\code{\link{min}}
@@ -39,7 +39,7 @@ NULL
 #' library(lmom)
 #' library(dplyr)
 #' outp <- out %>% filter(dd==2)
-#' evplot(outp)
+#' evplot(outp$aggr)
 #' 
 #' 
 
