@@ -46,6 +46,7 @@ annual.agg.pel <- function(distrib=c("exp","gam","gev","glo","gpa","gno","gum","
   x <- as.data.frame(x)
   for(it in names(dds)) {
     xval <- x[which(x[,dd.name]==dds[it]),aggr.name]
+    attr(out[[it]],dd.name) <- dds[it]
     attr(out[[it]],"ks.test") <- ks.test(x=xval,y=cdf,para=out[[it]],alternative = alternative,exact=exact)
   }  
 

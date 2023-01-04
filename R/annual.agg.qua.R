@@ -1,6 +1,7 @@
 NULL
+#'
 #' Mirror of \code{\link{qua}}: probability distribution fitting with L-Moments
-#' 
+#'
 #' @param f vector of probabilities/frequencies.
 #' @param para object returned by \code{\link{annual.agg.pel}}.
 #' @param aggr.name,dd.name column names. see \code{\link{annual.agg.samlmu}} or \code{\link{annual.agg.pel}}.
@@ -17,10 +18,10 @@ NULL
 #' 
 #' @export
 #' @examples 
+#' 
 #' library(RMAWGEN)
-#
-#' set.seed(123)
-#' ##
+#'
+#' 
 #' data(trentino)
 #' time <- as.Date(sprintf("%04d-%02d-%02d",PRECIPITATION$year,
 #'                        PRECIPITATION$month,PRECIPITATION$day),format="%Y-%m-%d")
@@ -32,14 +33,40 @@ NULL
 #' z <- annual.agg.pel(distrib="gpa",x=y,lmom=lmom)
 #'
 #' out <- annual.agg.qua(para=z)
-
+#'
+#' \donttest{
+#' 
+#' library(GSODR)
+#' library(magrittr)
+#' library(data.table)
+#' library(dplyr)
+#' 
+#' set.seed(123)
+#' 
+#' years <- 1937:2020
+#' gsod <- get_GSOD(years=years,station="623180-99999") ##ALEXANDRIA INTL EG 623180-99999
+#' prec <- gsod %>% select(YEARMODA,PRCP,PRCP_ATTRIBUTES) %>%
+#'  mutate(YEARMODA=as.Date(YEARMODA,format="%Y-%m-%d")) 
+#' 
+#' dds <- range(prec$YEARMODA)
+#' ## See GSODR documentation
+#' yymmdds <- seq(from=dds[1],to=dds[2],by="day")
+#' prec <- data.table::data.table(YEARMODA=yymmdds) %>% full_join(prec)
+#' y <- annual.agg(x=prec$PRCP,dd=1:5,time=prec$YEARMODA)
+#' ### y$aggr cannot be -Inf or +Inf
+#' y$aggr[y$aggr==-Inf] <- NA
+#' lmom <- annual.agg.samlmu(y)
+#' lmrd(lmom)
+#' z <- annual.agg.pel(distrib="gev",x=y,lmom=lmom)
+#' out <- annual.agg.qua(f=c(1:49)/50,para=z)
+#' }
 
 annual.agg.qua <- function(f=(0:10)/10,para,f.name="f",aggr.name=NA,dd.name=NA,use_ggplot=TRUE,xlab="duration",ylab="value",fill=c("#ca0020","#0571b0","#bababa","#bababb","#bababc"),nrun=5,...)
   
 {
   
   
-  out <- lapply(para,FUN=qua,f=f) %>% lapply(data.frame,f=f) %>% melt(id="f") ##%>% reshape2::melt()
+  out <- lapply(para,FUN=qua,f=f) %>% lapply(data.frame,f=f) %>% reshape2::melt(id="f") ##%>% reshape2::melt()
   ###
   ###
   
@@ -66,7 +93,7 @@ annual.agg.qua <- function(f=(0:10)/10,para,f.name="f",aggr.name=NA,dd.name=NA,u
     
     if (nrun>0) for (i in 1:nrun) {
       f <- runif(nyr)
-      zzr <- lapply(para,FUN=qua,f=f) %>% lapply(data.frame,f=f) %>% melt(id="f") 
+      zzr <- lapply(para,FUN=qua,f=f) %>% lapply(data.frame,f=f) %>% reshape2::melt(id="f") 
       ##dd <- attr(para,"lmom")[,dd.name]
       ##names(dd) <- sprintf(attr(para,"dd_formatter"),dd)
      
@@ -124,6 +151,8 @@ annual.agg.qua <- function(f=(0:10)/10,para,f.name="f",aggr.name=NA,dd.name=NA,u
 
 ### 'Yearly*" counterpart
 NULL
+#'
+#'
 #' @rdname annual.agg.qua
 #' @export
 #' 

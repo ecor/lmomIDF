@@ -16,6 +16,9 @@ yearly.agg.samlmu(x, ...)
 
 \item{...}{further arguments for \code{\link{samlmu}}}
 }
+\value{
+a data frame containing the L-moment of rainfall intensity for each duration category.
+}
 \description{
 Sample L-Moments of annual maxima or minima values
 }
@@ -32,6 +35,67 @@ out <- annual.agg.samlmu(y)
 
 lmrd(out)
 
-summary(lm(log(l_1) ~ log(dd),data=out))
+log_l_1 <- log(out$l_1)
+log_dd <- log(out$dd)
+fit <- lm(log_l_1 ~ log_dd)
+summary(fit)
+library(ggplot2)
+gg <- ggplot(fit$model, aes_string(x = names(fit$model)[2], y = names(fit$model)[1]))+
+geom_point()+stat_smooth(method = "lm", col = "blue") +     
+labs(title = paste("Adj R2 = ",signif(summary(fit)$adj.r.squared, 5),
+                                                  "Intercept =",signif(fit$coef[[1]],5 ),
+                                                  " Slope =",signif(fit$coef[[2]], 5),
+                                                  " P =",signif(summary(fit)$coef[2,4], 5)))
+##gg <- ggplot()+geom_point(aes(x=log(dd),y=log(l_1)),data=out)+theme_bw()
+gg <- gg+theme_bw()
+gg
 
+## Case of a GSOD dataset time series
+\donttest{
+
+library(GSODR)
+library(magrittr)
+library(data.table)
+library(dplyr)
+library(ggplot2)
+set.seed(123)
+
+years <- 1937:2020
+gsod <- get_GSOD(years=years,station="623180-99999") ##ALEXANDRIA INTL EG 623180-99999
+prec <- gsod \%>\% select(YEARMODA,PRCP,PRCP_ATTRIBUTES) \%>\%
+ mutate(YEARMODA=as.Date(YEARMODA,format="\%Y-\%m-\%d")) 
+
+dds <- range(prec$YEARMODA)
+## See GSODR documentation
+yymmdds <- seq(from=dds[1],to=dds[2],by="day")
+prec <- data.table::data.table(YEARMODA=yymmdds) \%>\% full_join(prec)
+y <- annual.agg(x=prec$PRCP,dd=1:5,time=prec$YEARMODA)
+### y$aggr cannot be -Inf or +Inf
+y$aggr[y$aggr==-Inf] <- NA
+out <- annual.agg.samlmu(y)
+lmrd(out)
+log_l_1 <- log(out$l_1)
+log_dd <- log(out$dd)
+fit <- lm(log_l_1 ~ log_dd)
+summary(fit)
+
+ggg <- ggplot(fit$model, aes_string(x = names(fit$model)[2], y = names(fit$model)[1]))+
+geom_point()+stat_smooth(method = "lm", col = "blue") +     
+labs(title = paste("Adj R2 = ",signif(summary(fit)$adj.r.squared, 5),
+                                                  "Intercept =",signif(fit$coef[[1]],5 ),
+                                                  " Slope =",signif(fit$coef[[2]], 5),
+                                                  " P =",signif(summary(fit)$coef[2,4], 5)))
+##gg <- ggplot()+geom_point(aes(x=log(dd),y=log(l_1)),data=out)+theme_bw()
+ggg <- ggg+theme_bw()
+ggg
+
+
+
+
+}
+  
+
+}
+\seealso{
+\code{\link{samlmu}]}
 }

@@ -10,7 +10,7 @@ Date: 2023-01-03
 Repository: CRAN
 Depends: R(>= 3.0.1),lmomPi
 Imports:dplyr,magrittr,reshape2,lmom,stringr,ggplot2
-Suggests: rasterList,lmomRFA,RMAWGEN
+Suggests: rasterList,lmomRFA,RMAWGEN,GSODR,data.table
 RoxygenNote: 7.1.2
 NeedsCompilation: no
 Packaged: 2017-11-28 15:32:55 UTC; cordaem
