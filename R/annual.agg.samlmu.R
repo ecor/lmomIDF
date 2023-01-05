@@ -83,7 +83,6 @@ NULL
 #'
 #'
 #' }
-
 #'   
 #'
 annual.agg.samlmu <- function(x,aggr.name="aggr",dd.name="dd",...) {
@@ -93,6 +92,10 @@ annual.agg.samlmu <- function(x,aggr.name="aggr",dd.name="dd",...) {
   out <- x[,aggr.name] %>% split(x[,dd.name]) %>% lapply(FUN=samlmu,...)
   out <- out %>% as.data.frame() %>% t() %>% as.data.frame()
   out[,dd.name] <- u
+  
+  ####
+  
+  
   
   return(out)
 }
