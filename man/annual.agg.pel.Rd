@@ -37,7 +37,7 @@ yearly.agg.pel_lmom(lmom, ...)
 
 \item{x}{object returned by \code{\link{annual.agg}} or \code{\link{yearly.agg}}}
 
-\item{lmom}{object returned by \code{\link{annual.agg.samlmu}} or \code{\link{yearly.agg.samlmu}}}
+\item{lmom}{object returned by \code{\link{annual.agg.samlmu}} or \code{\link{yearly.agg.samlmu}} or \code{\link{annual.agg.idf.samlmu}}}
 
 \item{dd_formatter}{string formatter for duration in the function value}
 
@@ -57,7 +57,10 @@ time <- as.Date(sprintf("\%04d-\%02d-\%02d",PRECIPITATION$year,
                        PRECIPITATION$month,PRECIPITATION$day),format="\%Y-\%m-\%d")
 x <- PRECIPITATION$B8570
 
-y <- annual.agg(x,dd=1:20,time) 
+y <- annual.agg(x,dd=1:5,time) 
 lmom <- annual.agg.samlmu(y)
 lmrd(lmom)
+
+out <- annual.agg.pel(distrib="gpa",x=y,lmom=lmom)
+
 }

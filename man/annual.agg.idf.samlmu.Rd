@@ -11,6 +11,9 @@ annual.agg.idf.samlmu(
   aggr.name = "aggr",
   dd.name = "dd",
   nn_moms = c("l_1", "l_2"),
+  use_ggplot = TRUE,
+  col = "blue",
+  like_lmom = TRUE,
   ...
 )
 
@@ -23,10 +26,18 @@ yearly.agg.idf.samlmu(x, ...)
 
 \item{aggr.name, dd.name}{optional column mane for \code{x}. See function usage.}
 
+\item{nn_moms}{column names of \code{lmom} whose l-moments  are scaled with duration event.}
+
+\item{use_ggplot}{logical. if it is \code{TRUE} (default) regression plot is created. See function result descriptions.}
+
+\item{col}{argument for \code{ggplot2} functions. It is used if \code{use_ggplot==TRUE}.}
+
+\item{like_lmom}{logical. If it is \code{TRUE}, function returns a data frame formatted like \code{lmom} to be used for \code{\link{annual.agg.pel}}, otherwise it returns the outcome of \code{\link{samlmu}} .}
+
 \item{...}{further arguments for \code{\link{samlmu}}}
 }
 \value{
-a data frame containing the L-moment of rainfall intensity for each duration category. LOREM IPSUM
+a data frame containing the L-moment of rainfall intensity for each duration category. Plus attributes, see function code.
 }
 \description{
 Sample L-Moments of annual maxima or minima values
@@ -39,8 +50,13 @@ time <- as.Date(sprintf("\%04d-\%02d-\%02d",PRECIPITATION$year,
 PRECIPITATION$month,PRECIPITATION$day),format="\%Y-\%m-\%d")
 x <- PRECIPITATION$B8570
 
-y <- annual.agg(x,dd=1:10,time)
+y <- annual.agg(x,dd=1:5,time)
 out <- annual.agg.idf.samlmu(y)
+
+out_pel <- annual.agg.pel(distrib="gev",x=y,lmom=out)
+set.seed(560)
+out_qua <- annual.agg.qua(para=out_pel)
+attr(out_qua,"boxplot")
 
 
 

@@ -15,7 +15,11 @@ annual.agg.qua(
   xlab = "duration",
   ylab = "value",
   fill = c("#ca0020", "#0571b0", "#bababa", "#bababb", "#bababc"),
+  color_idf = brewer.pal(name = "YlOrRd", n = length(f)),
   nrun = 5,
+  n_idf = NULL,
+  remove_distrib_from_boxplot = FALSE,
+  idf_curve = TRUE,
   ...
 )
 
@@ -30,11 +34,17 @@ yearly.agg.qua(...)
 
 \item{aggr.name, dd.name}{column names. see \code{\link{annual.agg.samlmu}} or \code{\link{annual.agg.pel}}.}
 
-\item{use_ggplot}{logical. if iy is \code{TRUE} (dafault) boxplots are created. See function result descriptions.}
+\item{use_ggplot}{logical. if it is \code{TRUE} (default) boxplots are created. See function result descriptions.}
 
-\item{xlab, ylab, fill}{arguments for \code{ggplot2} functions. It is used if \code{use_ggplot==TRUE}. See \code{\link{geom_boxplot}},\code{\link{scale_fill_manual}},\code{\link{labs}}}
+\item{xlab, ylab, fill, color_idf}{arguments for \code{ggplot2} functions. It is used if \code{use_ggplot==TRUE}. See \code{\link{geom_boxplot}},\code{\link{scale_fill_manual}},\code{\link{labs}}}
 
 \item{nrun}{additional Monte-Carlo generations. It is used if \code{use_ggplot==TRUE}.}
+
+\item{n_idf}{exponemts (e.g. generally mamed \code{n}) of Intansity Diration Curve}
+
+\item{remove_distrib_from_boxplot}{logical. It is used if \code{use_ggplot==TRUE}.  Default see usage. If it \code{TRUE} distribution quantiles are removed from box plots.}
+
+\item{idf_curve}{logical. It is used if \code{use_ggplot==TRUE}.  Default see usage. If it \code{TRUE}. IDF (intensity-durantion-frequancy) and DDF (depth-durantion-frequancy) curves are added to the respective boxplots}
 
 \item{...}{further arguments.}
 }

@@ -2,7 +2,7 @@ NULL
 #' Mirror of \code{\link{pel...}}: probability distribution fitting with L-Moments
 #' 
 #' @param distrib character string incating the probability distribution to fit 
-#' @param lmom object returned by \code{\link{annual.agg.samlmu}} or \code{\link{yearly.agg.samlmu}}
+#' @param lmom object returned by \code{\link{annual.agg.samlmu}} or \code{\link{yearly.agg.samlmu}} or \code{\link{annual.agg.idf.samlmu}}
 #' @param x object returned by \code{\link{annual.agg}} or \code{\link{yearly.agg}}
 #' @param aggr.name,dd.name optional column names for \code{x} and/or \code{lmom}. See function usage.
 #' @param dd_formatter string formatter for duration in the function value
@@ -19,10 +19,12 @@ NULL
 #'                        PRECIPITATION$month,PRECIPITATION$day),format="%Y-%m-%d")
 #' x <- PRECIPITATION$B8570
 #'
-#' y <- annual.agg(x,dd=1:20,time) 
+#' y <- annual.agg(x,dd=1:5,time) 
 #' lmom <- annual.agg.samlmu(y)
 #' lmrd(lmom)
-
+#'
+#' out <- annual.agg.pel(distrib="gpa",x=y,lmom=lmom)
+#'
 
 annual.agg.pel <- function(distrib=c("exp","gam","gev","glo","gpa","gno","gum","kap","ln3","nor","pe3","wak","wei")[3],
                   x,lmom=lmom,dd.name="dd",dd_formatter="D%03d",aggr.name="aggr",
@@ -56,7 +58,7 @@ annual.agg.pel <- function(distrib=c("exp","gam","gev","glo","gpa","gno","gum","
   attr(out,"dd.name") <- dd.name
   attr(out,"dd_formatter") <- dd_formatter
   attr(out,"aggr.name") <- aggr.name
-  
+  attr(out,"n_idf") <- attr(lmom,"n_idf")
   ###
   
   ###  

@@ -9,7 +9,7 @@ Version: 0.0.2
 Date: 2023-01-03
 Repository: CRAN
 Depends: R(>= 3.0.1),lmomPi
-Imports:dplyr,magrittr,reshape2,lmom,stringr,ggplot2
+Imports:dplyr,magrittr,reshape2,lmom,stringr,ggplot2,RColorBrewer
 Suggests: rasterList,lmomRFA,RMAWGEN,GSODR,data.table
 RoxygenNote: 7.1.2
 NeedsCompilation: no
