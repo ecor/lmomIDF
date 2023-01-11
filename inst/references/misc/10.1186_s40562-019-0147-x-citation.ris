@@ -1,0 +1,18 @@
+TY  - JOUR
+AU  - Sun, Yabin
+AU  - Wendi, Dadiyorto
+AU  - Kim, Dong Eon
+AU  - Liong, Shie-Yui
+PY  - 2019
+DA  - 2019/12/12
+TI  - Deriving intensity–duration–frequency (IDF) curves using downscaled in situ rainfall assimilated with remote sensing data
+JO  - Geoscience Letters
+SP  - 17
+VL  - 6
+IS  - 1
+AB  - The rainfall intensity–duration–frequency (IDF) curves play an important role in water resources engineering and management. The applications of IDF curves range from assessing rainfall events, classifying climatic regimes, to deriving design storms and assisting in designing urban drainage systems, etc. The deriving procedure of IDF curves, however, requires long-term historical rainfall observations, whereas lack of fine-timescale rainfall records (e.g. sub-daily) often results in less reliable IDF curves. This paper presents the utilization of remote sensing sub-daily rainfall, i.e. Global Satellite Mapping of Precipitation (GSMaP), integrated with the Bartlett-Lewis rectangular pulses (BLRP) model, to disaggregate the daily in situ rainfall, which is then further used to derive more reliable IDF curves. Application of the proposed method in Singapore indicates that the disaggregated hourly rainfall, preserving both the hourly and daily statistic characteristics, produces IDF curves with significantly improved accuracy; on average over 70% of RMSE is reduced as compared to the IDF curves derived from daily rainfall observations.
+SN  - 2196-4092
+UR  - https://doi.org/10.1186/s40562-019-0147-x
+DO  - 10.1186/s40562-019-0147-x
+ID  - Sun2019
+ER  - 
