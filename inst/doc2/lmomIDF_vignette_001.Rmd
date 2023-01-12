@@ -14,7 +14,8 @@ bibliography: bibliography.bib
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  echo=TRUE
+  echo=TRUE,
+  warning = FALSE
 )
 ###knitr::opts_chunk$set(echo = TRUE)
 ```
@@ -46,23 +47,84 @@ library(GSODR)
 library(dplyr)
 library(magrittr)
 years <- 1937:2020
-gsod <- get_GSOD(years=years,station="623180-99999") ##ALEXANDRIA INTL EG 623180-99999
+gsod_rds <- "/home/ecor/local/rpackages/jrc/lmomIDF/inst/ext_data/gsod.rds"
+cond <- file.exists(gsod_rds) 
+if (!cond) {
+  gsod <- get_GSOD(years=years,station="623180-99999") ##ALEXANDRIA INTL EG 623180-99999
+  saveRDS(gsod,file=gsod_rds)  
+} else {
+  gsod <- readRDS(file=gsod_rds)
+}
+
+#####
+#####
+
 prec <- gsod %>% select(YEARMODA,PRCP,PRCP_ATTRIBUTES) %>%
  mutate(YEARMODA=as.Date(YEARMODA,format="%Y-%m-%d")) 
 
-knitr::kable(prec)
+knitr::kable(rbind(head(prec),tail(prec)))
 
+### Dataset preparation 
+## insertion of rows so that all instants are equidistant (i.e. there is a constant time step) 
+## inserting any NA values of precipitation intensity
+
+
+dds <- range(prec$YEARMODA)
+## See GSODR documentation
+yymmdds <- seq(from=dds[1],to=dds[2],by="day")
+prec <- data.table::data.table(YEARMODA=yymmdds) %>% full_join(prec)
 
 
 
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+## Precipitation Time Series
+
+Time series can be visualized as follows: 
+
+```{r gsod_zoo, fig.width=7, paged.print=FALSE}
+
+library(zoo)
+library(dygraphs)
+
+time <- prec$YEARMODA
+precz <- prec$PRCP %>% as.zoo()
+index(precz) <- time
+main="DAILY PRECIPITATION Vs TIME"
+ylab="precipitation [mm/hr]"
+xlab="time"
+
+dd <- dygraph(precz,main=main,ylab=ylab,xlab=xlab) %>% dyRangeSelector()
+dd
+
+
+```
+
+## Annual Maxima for fixed duration 
+
+Annual maxima are extracted:
+```{r ann.max,fig.width=7, paged.print=FALSE}
+
+library(lmomIDF)
+
+ann.maxima <- annual.agg(x=prec$PRCP,time=prec$YEARMODA,aggr.fun=max,dd=1:5)
+### values cannot be -Inf or +Inf
+ann.maxima$aggr[ann.maxima$aggr==-Inf] <- NA
+###
+str(ann.maxima)
+###
+ann.maxima.z <- ann.maxima %>% reshape2::dcast(index ~ dd)
+time <- as.numeric(ann.maxima.z$index)
+ann.maxima.z <- ann.maxima.z %>% select(-index) %>% as.zoo()
+index(ann.maxima.z) <- time
+main="MAXIMUM PRECIPITATION INTENSITY Vs TIME"
+ylab="precipitation intensity [mm/hr]"
+xlab="time"
+
+dda <- dygraph(ann.maxima.z,main=main,ylab=ylab,xlab=xlab) %>% dyRangeSelector()
+dda
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
