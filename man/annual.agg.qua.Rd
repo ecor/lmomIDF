@@ -95,3 +95,6 @@ z <- annual.agg.pel(distrib="gev",x=y,lmom=lmom)
 out <- annual.agg.qua(f=c(1:49)/50,para=z)
 }
 }
+\seealso{
+\code{\link{annual.agg.idf.samlmu}}
+}

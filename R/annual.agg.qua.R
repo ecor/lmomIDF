@@ -22,6 +22,8 @@ NULL
 #' @importFrom RColorBrewer brewer.pal
 #' @importFrom lmomPi qua
 #' 
+#' @seealso \code{\link{annual.agg.idf.samlmu}}
+#' 
 #' @export
 #' @examples 
 #' 
@@ -79,8 +81,11 @@ annual.agg.qua <- function(f=(0:10)/10,para,f.name="f",aggr.name=NA,dd.name=NA,u
   ###
  ## out0 <- 
   ###
-  
-
+  ## EC 20230114
+  if (length(color_idf)<length(f)) color_idf[length(color_idf):length(f)] <- color_idf[length(color_idf)]
+  ## END EC 20230114
+      
+      
   if (is.null(dd.name)) dd.name <- NA
   if (is.null(aggr.name)) aggr.name <- NA
   if (is.null(n_idf)) n_idf <- NA
@@ -95,6 +100,8 @@ annual.agg.qua <- function(f=(0:10)/10,para,f.name="f",aggr.name=NA,dd.name=NA,u
   out[,dd.name] <- dd[out$L1]
   out <- out[c("f",dd.name,"value")]
   names(out) <- c(f.name,dd.name,aggr.name)
+  
+  
  ## out
   if (use_ggplot) {
     ####

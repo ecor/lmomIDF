@@ -108,6 +108,8 @@ Annual maxima are extracted:
 ```{r ann.max,fig.width=7, paged.print=FALSE}
 
 library(lmomIDF)
+library(lubridate)
+
 
 ann.maxima <- annual.agg(x=prec$PRCP,time=prec$YEARMODA,aggr.fun=max,dd=1:5)
 ### values cannot be -Inf or +Inf
@@ -118,7 +120,11 @@ str(ann.maxima)
 ann.maxima.z <- ann.maxima %>% reshape2::dcast(index ~ dd)
 time <- as.numeric(ann.maxima.z$index)
 ann.maxima.z <- ann.maxima.z %>% select(-index) %>% as.zoo()
-index(ann.maxima.z) <- time
+time1 <- as.Date("1980-01-01")
+year(time1) <- time
+index(ann.maxima.z) <- time1 
+
+
 main="MAXIMUM PRECIPITATION INTENSITY Vs TIME"
 ylab="precipitation intensity [mm/hr]"
 xlab="time"
@@ -126,8 +132,66 @@ xlab="time"
 dda <- dygraph(ann.maxima.z,main=main,ylab=ylab,xlab=xlab) %>% dyRangeSelector()
 dda
 ```
+## 1980-2010
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+### L-moment estimation 
+
+Assuming a reference period from 1980 to 2010, L-moment are computed as follows (@Hosking20219lmom):
+
+```{r ann.max.samlum.1980.2010,fig.width=7, paged.print=FALSE}
+
+x <- ann.maxima %>% filter(as.numeric(index) %in% 1980:2010) 
+lmom <- annual.agg.samlmu(x)
+
+head(lmom)
+
+```
+### GEV fitting
+
+Through L-Moments , GEV probability distribution parameter were estimated:
+
+```{r ann.max.pel.1980.2010,fig.width=7, paged.print=FALSE}
+
+para <- annual.agg.pel(distrib="gev",x=x,lmom=lmom)
+
+para$D001
+attr(para,"lmom")
+
+
+```
+```{r ann.max.qua.1980.2010,fig.width=7, paged.print=FALSE}
+
+
+
+
+```
+### GEV fitting
+
+
+
+
+## IDF curves (1981-2010)
+
+Lorem ispsum
+```{r ann.max.idf,fig.width=7, paged.print=FALSE}
+
+ 
+## annual.agg.qua ## TO GO ON 
+```
+
+
+## L-moment estimation (1991-2020)
+
+Lorem ispsum
+```{r ann.max_todo,fig.width=7, paged.print=FALSE}
+
+ ## LOREM IPSUM 
+```
+
+
+
+
+
 
 ## References 
 
