@@ -1,5 +1,5 @@
 ---
-title: "Vignette Title"
+title: "Estimation of Intensity-Duration-Frequency (IDF) Curve through L-Moment method"
 author: "Emanuele Cordano"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -41,14 +41,14 @@ where $I$ is precipitation intensity [mm/hr or mm/day] , $D$ is the duration of 
 
 - Probability distribution of annual maximum precipitation average intensity maintains constant properties (e.g.  parametric definition) for different event time duration only some moments or parameters are scaled with duration.
 
-Therefore annual maxima precipitation are collected from daily  or hourly time series; for each duration a probability distributions (e.g. a GEV distribution) is fitted though a Maximum Likelihood Method or a L-Moment Method; fitting is verified with a statistical test (e.g. Kolgorov-Smirnov test); some moments and/or parameter are scaled with duration through a regression (e.g. a log-LM model); a probability distribution with new moments' and parameters' values is estimated for each duration; it can be tested versus original maxima time series.
+Therefore annual maxima precipitation are collected from daily  or hourly time series; for each duration a probability distributions (e.g. a GEV distribution (@gevwiki)) is fitted though a Maximum Likelihood Method or a L-Moment Method; fitting is verified with a statistical test (e.g. Kolgorov-Smirnov test (@Marsaglia2003)); some moments and/or parameter are scaled with duration through a regression (e.g. a log-LM model); a probability distribution with new moments' and parameters' values is estimated for each duration; it can be tested versus original maxima time series.
 Recently, @Heidari2020 extend also the concepts of IDF curves to droughts. This aspect can be used in this package but requires further investigations. 
 
 
 
 ## An application with GSOD dataset
 
-Here is an application of use of the packege with GSOD precipitation data through GSODR package (@Sparks2017) to get (and work with) daily precipitation time series recerder in Alexandria International Airport, Egypt. 
+Here is an application of use of the packege with GSOD precipitation data through GSODR package (@Sparks2017) to get (and work with) daily precipitation time series recorded in Alexandria International Airport, Egypt. 
 
 ```{r gsod}
 
@@ -176,26 +176,26 @@ Regressing logarithms the absolute 1nd and 2rd L-moments with the logarithm of d
 ```{r ann.max.qua.1981.2010,fig.width=7, paged.print=FALSE}
 
 
-lmom_idf <- annual.agg.idf.samlmu(x,lmom=attr(para,"lmom"))
+lmom_idf_1981_2010 <- annual.agg.idf.samlmu(x,lmom=attr(para,"lmom"))
 ####
-summary(attr(lmom_idf,"fit"))
+summary(attr(lmom_idf_1981_2010,"fit"))
 ####
-attr(lmom_idf,"gg")
+attr(lmom_idf_1981_2010,"gg")
 
 ```
 
-A IDF relations like $I =  a(T) D^{n}$, where $n$ is estimated to be `r signif(attr(lmom_idf,"n_idf"),5)`, has been assed:  
+A IDF relations like $I =  a(T) D^{n}$, where $n$ is estimated to be `r signif(attr(lmom_idf_1981_2010,"n_idf"),5)`, has been assed:  
 
 ```{r ann.max.idf.pel.1981.2010,fig.width=7, paged.print=FALSE}
-para_idf_1981_2010 <- annual.agg.pel(distrib="gev",x=x,lmom=lmom_idf)
+para_idf_1981_2010 <- annual.agg.pel(distrib="gev",x=x,lmom=lmom_idf_1981_2010)
 
 para_idf_1981_2010$D001
 attr(para_idf_1981_2010,"lmom")
  
 ```
 
-*p.values* of Kolgormov-Smirov's test present values greater than `signif(min(attr(para_idf,"lmom")$p.value),2)-0.01`.
-Here is boxplot of precipitation intensity versus duration with IDF curves for some return periods (e.g. 2,5,10,...,100,... years)(legend reports frequacies/probailities $f$ defined as $f=1- {1 \over T}$ with $T$ return periods):
+*p.values* of Kolgormov-Smirov's test present values greater than `r signif(min(attr(para_idf_1981_2010,"lmom")$p.value),2)-0.01`.
+Here is boxplot of precipitation intensity versus duration with IDF curves for some return periods (e.g. 2,5,10,...,100,... years)(legend reports frequencies/probailities $f$ defined as $f=1- {1 \over T}$ with $T$ return periods):
 ```{r ann.max.idf.qua.1981.2010,fig.width=7, paged.print=FALSE}
 
 set.seed(560)
@@ -257,25 +257,25 @@ Regressing logarithms the absolute 1nd and 2rd L-moments with the logarithm of d
 ```{r ann.max.qua.1991.2020,fig.width=7, paged.print=FALSE}
 
 
-lmom_idf <- annual.agg.idf.samlmu(x,lmom=attr(para,"lmom"))
+lmom_idf_1991_2020 <- annual.agg.idf.samlmu(x,lmom=attr(para,"lmom"))
 ####
-summary(attr(lmom_idf,"fit"))
+summary(attr(lmom_idf_1991_2020,"fit"))
 ####
-attr(lmom_idf,"gg")
+attr(lmom_idf_1991_2020,"gg")
 
 ```
 
-A IDF relations like $I =  a(T) D^{n}$, where $n$ is estimated to be `r signif(attr(lmom_idf,"n_idf"),5)`, has been assed:  
+A IDF relations like $I =  a(T) D^{n}$, where $n$ is estimated to be `r signif(attr(lmom_idf_1991_2020,"n_idf"),5)`, has been assed:  
 
 ```{r ann.max.idf.pel.1991.2020,fig.width=7, paged.print=FALSE}
-para_idf_1991_2020 <- annual.agg.pel(distrib="gev",x=x,lmom=lmom_idf)
+para_idf_1991_2020 <- annual.agg.pel(distrib="gev",x=x,lmom=lmom_idf_1991_2020)
 
 para_idf_1991_2020$D001
 attr(para_idf_1991_2020,"lmom")
  
 ```
 
-*p.values* of Kolgormov-Smirov's test present values greater than `signif(min(attr(para_idf,"lmom")$p.value),2)-0.01`.
+*p.values* of Kolgormov-Smirov's test present values greater than `r signif(min(attr(para_idf_1991_2020,"lmom")$p.value),2)-0.01`.
 Here is boxplot of precipitation intensity versus duration with IDF curves for some return periods (e.g. 2,5,10,...,100,... years)(legend reports frequacies/probailities $f$ defined as $f=1- {1 \over T}$ with $T$ return periods):
 ```{r ann.max.idf.qua.1991.2020,fig.width=7, paged.print=FALSE}
 
@@ -296,6 +296,57 @@ attr(out_qua_1991_2020,"ddf")
 
 
 
+## Comparison between 1981-2010 and 1991-2020 
+
+
+
+```{r comparison }
+
+qua_1991_2020 <- out_qua_1991_2020
+qua_1981_2010 <- out_qua_1981_2010
+
+attr(out_qua_1981_2010,"n_idf")
+attr(out_qua_1991_2020,"n_idf")
+
+qua_1981_2010$a <- qua_1981_2010$aggr/(qua_1981_2010$dd^attr(out_qua_1981_2010,"n_idf"))
+qua_1991_2020$a <- qua_1991_2020$aggr/(qua_1991_2020$dd^attr(out_qua_1991_2020,"n_idf"))
+#####
+qua_1981_2010 <- qua_1981_2010 %>% select(-aggr)
+qua_1991_2020 <- qua_1991_2020 %>% select(-aggr)
+#####
+
+names(qua_1981_2010)[names(qua_1981_2010)=="a"] <- "a_1981_2010"
+names(qua_1991_2020)[names(qua_1991_2020)=="a"] <- "a_1991_2020"
+#####
+
+
+# > ggplot()+geom_point(data=qua_both,aes(x=aggr_1981_2010,y=aggr_1991_2010))
+# Error in FUN(X[[i]], ...) : object 'aggr_1991_2010' not found
+# > ggplot()+geom_point(data=qua_both,aes(x=aggr_1981_2010,y=aggr_1991_2020))
+# > ggplot()+geom_point(data=qua_both,aes(x=aggr_1981_2010,y=aggr_1991_2020,group=dd))
+# > ggplot()+geom_point(data=qua_both,aes(x=aggr_1981_2010,y=aggr_1991_2020,group=dd,fill=dd))
+# > ggplot()+geom_point(data=qua_both,aes(x=aggr_1981_2010,y=aggr_1991_2020,group=dd,color=factor(dd)))
+# > 
+#####
+qua_both <- full_join(qua_1981_2010,qua_1991_2020)
+
+#####
+library(ggplot2)
+library(RColorBrewer)
+
+gg <- ggplot()+geom_point(data=qua_both,aes(x=a_1981_2010,y=a_1991_2020,color=factor(f)))
+gg <- gg+xlab("Quantiles 1981-2010")+ylab("Quantiles 1991-2020")+theme_bw()+geom_abline()
+###
+col1 <- brewer.pal(name="YlGnBu",n=length(unique(qua_both$f))) %>% col2rgb()
+col2 <- brewer.pal(name="YlOrRd",n=length(unique(qua_both$f))) %>% rev() %>% col2rgb()
+coll <- (col1*0.3+col2*0.7)/255
+##coll[,] <- as.integer(coll[,]) 
+colz <- rgb(red=coll["red",],green=coll["green",],blue=coll["blue",],maxColorValue = 1)
+
+##YlOrRd
+gg <- gg+scale_color_manual(name="Probability",values=colz)
+gg
+```
 
 
 

@@ -193,6 +193,8 @@ annual.agg.qua <- function(f=(0:10)/10,para,f.name="f",aggr.name=NA,dd.name=NA,u
     
     
   }
+  
+  attr(out,"n_idf") <- n_idf
   return(out) 
 }
 
