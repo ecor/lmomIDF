@@ -298,9 +298,9 @@ attr(out_qua_1991_2020,"ddf")
 
 ## Comparison between 1981-2010 and 1991-2020 
 
+Finally,  the estimations of the function $a(T)$, varying with time periods, is affected by the choice of the reference periods: at a fixed return period (or frequancy/probability) the quantiles estimating using 1991-2021 is greater than the one using 1981-2010 as reference time window.
 
-
-```{r comparison }
+```{r qqplot.idf,fig.width=7, paged.print=FALSE}
 
 qua_1991_2020 <- out_qua_1991_2020
 qua_1981_2010 <- out_qua_1981_2010
