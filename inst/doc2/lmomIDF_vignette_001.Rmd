@@ -31,7 +31,7 @@ knitr::opts_chunk$set(
 ## Intensity-Duration-Frequency Curve (IDF)
 
 
-Intensity-duration-frequency (IDF) curves usefully quantify extreme precipitation over various duration, e.g. from 1 to 360 hours,  and return periods for engineering design, e.g. the interest in the time concentration or time-structure of the rainfall.  (e.g. @Courty2019,@Sun2019)
+Intensity-duration-frequency (IDF) curves usefully quantify extreme precipitation over various duration, e.g. from 1 to 360 hours,  and return periods for engineering design, e.g. the interest in the time concentration or time-structure of the rainfall.  (e.g. @Courty2019,@Sun2019,@Markiewicz2021)
 Among the different mathematical formulations used in literature (CCC), the most commomt and used here in thiss package is  the following (@Koutsoyiannis1998): 
 <!--\qquad {-b \pm \sqrt{b^2-4ac} \over 2a} $$ -->
 $$ I =  a(T) D^{n} $$ 
@@ -41,14 +41,14 @@ where $I$ is precipitation intensity [mm/hr or mm/day] , $D$ is the duration of 
 
 - Probability distribution of annual maximum precipitation average intensity maintains constant properties (e.g.  parametric definition) for different event time duration only some moments or parameters are scaled with duration.
 
-Therefore annual maxima precipitation are collected from daily  or hourly time series; for each duration a probability distributions (e.g. a GEV distribution (@gevwiki)) is fitted though a Maximum Likelihood Method or a L-Moment Method; fitting is verified with a statistical test (e.g. Kolgorov-Smirnov test (@Marsaglia2003)); some moments and/or parameter are scaled with duration through a regression (e.g. a log-LM model); a probability distribution with new moments' and parameters' values is estimated for each duration; it can be tested versus original maxima time series.
+Therefore annual maxima precipitation are collected from daily  or hourly time series; for each duration a probability distributions (e.g. a GEV distribution (@gevwiki)) is fitted through a Maximum Likelihood Method or a L-Moment Method; goodness-of-fit is verified with a statistical test (e.g. Kolgorov-Smirnov test (@Marsaglia2003)); some moments and/or parameter are scaled with duration through a regression (e.g. a log-LM model); a probability distribution with new moments' and parameters' values is estimated for each duration; it can be tested versus original maxima time series.
 Recently, @Heidari2020 extend also the concepts of IDF curves to droughts. This aspect can be used in this package but requires further investigations. 
 
 
 
 ## An application with GSOD dataset
 
-Here is an application of use of the packege with GSOD precipitation data through GSODR package (@Sparks2017) to get (and work with) daily precipitation time series recorded in Alexandria International Airport, Egypt. 
+Here is an application of use of the package with GSOD precipitation data through *GSODR* package (@Sparks2017) to get (and work with) daily precipitation time series recorded in Alexandria International Airport, Egypt. 
 
 ```{r gsod}
 
@@ -56,7 +56,7 @@ library(GSODR)
 library(dplyr)
 library(magrittr)
 years <- 1937:2020
-gsod_rds <- "/home/ecor/local/rpackages/jrc/lmomIDF/inst/ext_data/gsod.rds"
+gsod_rds <- "/home/ecor/local/rpackages/jrc/lmomIDF/inst/ext_data/gsod_623180-99999.rds"
 cond <- file.exists(gsod_rds) 
 if (!cond) {
   gsod <- get_GSOD(years=years,station="623180-99999") ##ALEXANDRIA INTL EG 623180-99999
@@ -171,7 +171,7 @@ attr(para,"lmom")
 ```
 ### IDF curve (1981-2010)
 
-Regressing logarithms the absolute 1nd and 2rd L-moments with the logarithm of duration, it comes out: 
+Regressing logarithms the absolute 1nd and 2rd L-moments with the logarithm of duration, it is obtained: 
 
 ```{r ann.max.qua.1981.2010,fig.width=7, paged.print=FALSE}
 
@@ -195,7 +195,7 @@ attr(para_idf_1981_2010,"lmom")
 ```
 
 *p.values* of Kolgormov-Smirov's test present values greater than `r signif(min(attr(para_idf_1981_2010,"lmom")$p.value),2)-0.01`.
-Here is boxplot of precipitation intensity versus duration with IDF curves for some return periods (e.g. 2,5,10,...,100,... years)(legend reports frequencies/probailities $f$ defined as $f=1- {1 \over T}$ with $T$ return periods):
+Here is a boxplot of precipitation intensity versus duration with IDF curves for some return periods (e.g. 2,5,10,...,100,... years)(legend reports frequencies/probabilities $f$ defined as $f=1- {1 \over T}$ with $T$ return period):
 ```{r ann.max.idf.qua.1981.2010,fig.width=7, paged.print=FALSE}
 
 set.seed(560)
@@ -206,7 +206,7 @@ out_qua_1981_2010 <- annual.agg.qua(f=f,para=para_idf_1981_2010,remove_distrib_f
 attr(out_qua_1981_2010,"idf")
  
 ```
-And the analogous plot resenting precipitation depth with DDF (Depth-Duration-Frequacy) curve : 
+And the analogous plot resenting precipitation depth with DDF (Depth-Duration-Frequency) curve : 
 ```{r ann.max.idf.qua.depth.1981.2010,fig.width=7, paged.print=FALSE}
 
 attr(out_qua_1981_2010,"ddf")
@@ -239,7 +239,7 @@ head(lmom)
 ```
 ### GEV fitting
 
-Through L-Moments , GEV probability distribution parameter were estimated:
+Through the L-Moments , GEV probability distribution parameters are estimated as follows:
 
 ```{r ann.max.pel.1991.2020,fig.width=7, paged.print=FALSE}
 
@@ -252,7 +252,7 @@ attr(para,"lmom")
 ```
 ### IDF curve (1991-2020)
 
-Regressing logarithms the absolute 1nd and 2rd L-moments with the logarithm of duration, it comes out: 
+Regressing the logarithms the absolute 1nd and 2rd L-moments with the logarithm of duration, it is obtained: 
 
 ```{r ann.max.qua.1991.2020,fig.width=7, paged.print=FALSE}
 
@@ -265,7 +265,7 @@ attr(lmom_idf_1991_2020,"gg")
 
 ```
 
-A IDF relations like $I =  a(T) D^{n}$, where $n$ is estimated to be `r signif(attr(lmom_idf_1991_2020,"n_idf"),5)`, has been assed:  
+A IDF relations like $I =  a(T) D^{n}$, where $n$ is estimated to be `r signif(attr(lmom_idf_1991_2020,"n_idf"),5)`, is then assessed:  
 
 ```{r ann.max.idf.pel.1991.2020,fig.width=7, paged.print=FALSE}
 para_idf_1991_2020 <- annual.agg.pel(distrib="gev",x=x,lmom=lmom_idf_1991_2020)
@@ -276,7 +276,7 @@ attr(para_idf_1991_2020,"lmom")
 ```
 
 *p.values* of Kolgormov-Smirov's test present values greater than `r signif(min(attr(para_idf_1991_2020,"lmom")$p.value),2)-0.01`.
-Here is boxplot of precipitation intensity versus duration with IDF curves for some return periods (e.g. 2,5,10,...,100,... years)(legend reports frequacies/probailities $f$ defined as $f=1- {1 \over T}$ with $T$ return periods):
+Here is a boxplot of precipitation intensity versus duration with IDF curves for some return periods (e.g. 2,5,10,...,100,... years)(legend reports frequencies/probabilities $f$ defined as $f=1- {1 \over T}$ with $T$ return period):
 ```{r ann.max.idf.qua.1991.2020,fig.width=7, paged.print=FALSE}
 
 set.seed(560)
@@ -298,7 +298,7 @@ attr(out_qua_1991_2020,"ddf")
 
 ## Comparison between 1981-2010 and 1991-2020 
 
-Finally,  the estimations of the function $a(T)$, varying with time periods, is affected by the choice of the reference periods: at a fixed return period (or frequancy/probability) the quantiles estimating using 1991-2021 is greater than the one using 1981-2010 as reference time window.
+Finally,  the estimation of the function $a(T)$, varying with time periods, is affected by the choice of the reference periods: at a fixed return period (or frequency/probability) the quarantines estimating using 1991-2021 is greater than the one using 1981-2010 as reference time window.
 
 ```{r qqplot.idf,fig.width=7, paged.print=FALSE}
 
@@ -350,11 +350,19 @@ gg
 
 
 
+## Conclusions
+
+Finally, a vignette about a proper use of **lmomIDF** package has been shown. The user can make his/her own quantitative assessments of the results and draw on the chunks of code reported to tailor what the package can offer to his/her own needs.
 
 
 
+## Further Readings on Similar Topic
 
+Similar reading on which outcomes can be compared: 
 
+- https://www.gis-blog.com/eva-intro-2/ ;
+
+- LOREM IPSUM .
 
 
 

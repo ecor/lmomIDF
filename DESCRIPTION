@@ -6,11 +6,12 @@ Type: Package
 Authors@R:  c(person(given="Emanuele",family="Cordano",role = c("aut","cre"),email = "emanuele.cordano@gmail.com"))
 Description: Intensity-Duration-Frequancy Analysis of the extreme preceipitation/rainfall events using the methods of L-Moments.
 Version: 0.0.2
-Date: 2023-01-13
+Date: 2023-01-18
 Repository: CRAN
 Depends: R(>= 3.5.0),lmomPi
 Imports:dplyr,magrittr,reshape2,lmom,stringr,ggplot2,RColorBrewer
-Suggests: rasterList,lmomRFA,RMAWGEN,GSODR,data.table
+Suggests: rasterList,lmomRFA,RMAWGEN,GSODR,data.table,knitr,knitcitations,dygraphs,zoo,lubridate,rmarkdown
+VignetteBuilder: knitr
 RoxygenNote: 7.1.2
 NeedsCompilation: no
 Packaged: 2017-11-28 15:32:55 UTC; cordaem
