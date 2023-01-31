@@ -1,8 +1,9 @@
 NULL
 #' Sample L-Moments of annual maxima or minima values 
 #'
-#' @param x object returned by \code{\link{annual.agg}} or \code{\link{yearly.agg}}
+#' @param x object returned by \code{\link{annual.agg}} or \code{\link{yearly.agg}} or a vector which will be processed through \code{\link{vec2df}}
 #' @param aggr.name,dd.name optional column mane for \code{x}. See function usage.
+#' @param dd_formatter argument used by \code{\link{vec2df}}
 #' @param ... further arguments for \code{\link{samlmu}}
 #'
 #' @export
@@ -11,7 +12,9 @@ NULL
 #' 
 #' @return a data frame containing the L-moment of rainfall intensity for each duration category. 
 #' 
-#' @seealso \code{\link{samlmu}]} 
+#' @seealso \code{\link{samlmu}} 
+#' 
+#' 
 #' @examples 
 #' 
 #' library(RMAWGEN)
@@ -22,7 +25,23 @@ NULL
 #'
 #' y <- annual.agg(x,dd=1:10,time)
 #' out <- annual.agg.samlmu(y)
+#' 
+#' y1 <- df2vec(y)
+#' out1 <- annual.agg.samlmu(y1)
+#' 
+#' if (max(abs(out1-out),na.rm=TRUE)>1e-8) stop("Something went wrong!") 
+#' for (it in names(attributes(out))) {
 #'
+#'    if (!identical(attr(out,it),attr(out1,it))) {
+#'       msg <- sprintf("Something went wrong in %s!",it)
+#'       stop(msg)
+#'    
+#'    }
+#'      
+#'   
+#' }
+#' 
+#' 
 #' lmrd(out)
 #'
 #' log_l_1 <- log(out$l_1)
@@ -85,8 +104,10 @@ NULL
 #' }
 #'   
 #'
-annual.agg.samlmu <- function(x,aggr.name="aggr",dd.name="dd",...) {
+annual.agg.samlmu <- function(x,aggr.name="aggr",dd.name="dd",dd_formatter="%03d",...) {
   
+  
+  if (is.vector(x)) x <- vec2df(x,aggr.name=aggr.name,dd.name=dd.name,dd_formatter=dd_formatter)
   x <- as.data.frame(x)
   u <- unique(x[,dd.name])
   out <- x[,aggr.name] %>% split(x[,dd.name]) %>% lapply(FUN=samlmu,...)

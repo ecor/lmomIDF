@@ -13,6 +13,7 @@ NULL
 #' @param numeric_index logical. Default is \code{FALSE}.
 #' @param format argument for \code{\link{as.character}} used to create \code{index} from \code{time}.
 #' @param aggr.name,dd.name,index.name optional column names of function results. See function usage.
+#' @param return_vector logical. If \code{TRUE} function return a vector through \code{\link{df2vec}}. Default is \code{FALSE}.
 #' @param filter,method,sides,... further arguments for \code{stats::\link[stats]{filter}}
 #'
 #' @seealso \code{stats::\link[stats]{filter}},\code{\link{max}},\code{\link{min}}
@@ -36,6 +37,12 @@ NULL
 #' out <- annual.agg(x,time)
 #' out2 <- yearly.agg(x,time)
 #' 
+#' 
+#' outv <- annual.agg(x,time,return_vector=TRUE)
+#' outv1 <- vec2df(outv)
+#' 
+#' if (!identical(out,outv1)) stop("Something went wrong!")
+#' 
 #' library(lmom)
 #' library(dplyr)
 #' outp <- out %>% filter(dd==2)
@@ -44,7 +51,7 @@ NULL
 #' 
 
 annual.agg <- function(x,time,index=as.character(time,format=format),dd=c(1,2,5),aggr.fun="max",na.rm=TRUE,
-                       format="%Y",dd_formatter="D%03d",numeric_dd=TRUE,numeric_index=FALSE,aggr.name="aggr",dd.name="dd",index.name="index",filter=lapply(dd,function(dd){rep(1,dd)/dd}),method="convolution",sides=1,...) {
+                       format="%Y",dd_formatter="D%03d",numeric_dd=TRUE,numeric_index=FALSE,aggr.name="aggr",dd.name="dd",index.name="index",filter=lapply(dd,function(dd){rep(1,dd)/dd}),method="convolution",sides=1,return_vector=FALSE,...) {
   
   cond1 <- all(diff(time)==diff(time)[1])
   if (!cond1) {
@@ -85,6 +92,8 @@ annual.agg <- function(x,time,index=as.character(time,format=format),dd=c(1,2,5)
   names(out)[iaggr] <- aggr.name
   names(out)[idd] <- dd.name
   names(out)[iindex] <- index.name
+  ###
+  if (return_vector) out <- df2vec(out,aggr.name=aggr.name,index.name=index.name,dd.name=dd.name,dd_formatter=dd_formatter)
   ###
   return(out)
 }

@@ -34,7 +34,7 @@ yearly.agg.cdf(...)
 \item{...}{further arguments.}
 }
 \value{
-a data frame containg values, probabilities/frequancies and duration values
+a data frame containg values, probabilities/frequencies and duration values
 }
 \description{
 Mirror of \code{\link{cdf}}: probability distribution fitting with L-Moments

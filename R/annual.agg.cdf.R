@@ -11,7 +11,7 @@ NULL
 #' @param ... further arguments. 
 #'
 #'
-#' @return a data frame containg values, probabilities/frequancies and duration values
+#' @return a data frame containg values, probabilities/frequencies and duration values
 #' @export
 #' @examples 
 #'

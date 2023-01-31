@@ -14,13 +14,14 @@ annual.agg.idf.samlmu(
   use_ggplot = TRUE,
   col = "blue",
   like_lmom = TRUE,
+  dd_formatter = "\%03d",
   ...
 )
 
 yearly.agg.idf.samlmu(x, ...)
 }
 \arguments{
-\item{x}{object returned by \code{\link{annual.agg}} or \code{\link{yearly.agg}}}
+\item{x}{object returned by \code{\link{annual.agg}} or \code{\link{yearly.agg}} or a vector which will be processed through \code{\link{vec2df}}}
 
 \item{lmom}{object returned by \code{\link{annual.agg.samlmu}} or \code{NULL}.}
 
@@ -34,6 +35,8 @@ yearly.agg.idf.samlmu(x, ...)
 
 \item{like_lmom}{logical. If it is \code{TRUE}, function returns a data frame formatted like \code{lmom} to be used for \code{\link{annual.agg.pel}}, otherwise it returns the outcome of \code{\link{samlmu}} .}
 
+\item{dd_formatter}{argument used by \code{\link{vec2df}}}
+
 \item{...}{further arguments for \code{\link{samlmu}}}
 }
 \value{
@@ -43,26 +46,6 @@ a data frame containing the L-moment of rainfall intensity for each duration cat
 Sample L-Moments of annual maxima or minima values
 }
 \examples{
-
-library(RMAWGEN)
-data(trentino)
-time <- as.Date(sprintf("\%04d-\%02d-\%02d",PRECIPITATION$year,
-PRECIPITATION$month,PRECIPITATION$day),format="\%Y-\%m-\%d")
-x <- PRECIPITATION$B8570
-
-y <- annual.agg(x,dd=1:5,time)
-out <- annual.agg.idf.samlmu(y)
-
-out_pel <- annual.agg.pel(distrib="gev",x=y,lmom=out)
-set.seed(560)
-out_qua <- annual.agg.qua(para=out_pel)
-attr(out_qua,"boxplot")
-
-
-
-rm(list=ls())
-###
-###
 
 library(lmomIDF)
 library(RMAWGEN)
@@ -74,17 +57,43 @@ x <- PRECIPITATION$B8570
 
 y <- annual.agg(x,dd=1:5,time)
 out <- annual.agg.idf.samlmu(y)
+y1 <- df2vec(y)
+out1 <- annual.agg.idf.samlmu(y1)
+
+y2 <- y1
+y2[] <- NA
+out2 <- annual.agg.idf.samlmu(y2)
+
+if (max(abs(out1-out),na.rm=TRUE)>1e-8) stop("Something went wrong!") 
+for (it in names(attributes(out))) {
+   if (it=="gg") { ## TO CHECK
+   } else if (is.list(attr(out,it))) for (itn in names(attr(out,it))) {
+         if (!identical(attr(out,it)[[itn]],attr(out1,it)[[itn]]) & !(itn \%in\% c("model","family","terms"))) { ## TO CHECK
+            msg <- sprintf("Something went wrong in \%s  \%s!",it,itn)
+            stop(msg)
+         }
+   } else if (!identical(attr(out,it),attr(out1,it))) {
+      msg <- sprintf("Something went wrong in \%s!",it)
+      stop(msg)
+   
+   }
+     
+  
+}
+
+
+
+
 
 out_pel <- annual.agg.pel(distrib="gpa",x=y,lmom=out)
 set.seed(560)
 f=c(0.5,0.8,0.9,0.95,0.98,0.99,0.999,0.9999)
-
 out_qua <- annual.agg.qua(para=out_pel,f=f,remove_distrib_from_boxplot=TRUE)
+
 \donttest{
+
 ####
 library(GSODR)
-#library(magrittr)
-#library(data.table)
 library(dplyr)
 
 set.seed(123)
@@ -92,7 +101,7 @@ set.seed(123)
 years <- 1937:2020
 gsod <- get_GSOD(years=years,station="623180-99999") ##ALEXANDRIA INTL EG 623180-99999
 prec <- gsod \%>\% select(YEARMODA,PRCP,PRCP_ATTRIBUTES) \%>\%
-  mutate(YEARMODA=as.Date(YEARMODA,format="\%Y-\%m-\%d")) 
+  mutate(YEARMODA=as.Date(YEARMODA,format="\%Y-\%m-\%d"))
 
 dds <- range(prec$YEARMODA)
 ## See GSODR documentation
@@ -111,7 +120,10 @@ out_qua_gsod <- annual.agg.qua(f=f,para=z,remove_distrib_from_boxplot=TRUE)
 attr(out_qua_gsod,"idf")
 attr(out_qua_gsod,"ddf")
 }
+
+
+
 }
 \seealso{
-\code{\link{samlmu}]} , \code{\link{annual.agg.samlmu}}
+\code{\link{samlmu}},\code{\link{annual.agg.samlmu}}
 }

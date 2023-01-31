@@ -3,7 +3,7 @@ NULL
 #' 
 #' @param distrib character string incating the probability distribution to fit 
 #' @param lmom object returned by \code{\link{annual.agg.samlmu}} or \code{\link{yearly.agg.samlmu}} or \code{\link{annual.agg.idf.samlmu}}
-#' @param x object returned by \code{\link{annual.agg}} or \code{\link{yearly.agg}}
+#' @param x object returned by \code{\link{annual.agg}} or \code{\link{yearly.agg}} or a vector which will be processed through \code{\link{vec2df}}
 #' @param aggr.name,dd.name optional column names for \code{x} and/or \code{lmom}. See function usage.
 #' @param dd_formatter string formatter for duration in the function value
 #' @param alternative,exact arguments for \code{\link{ks.test}}
@@ -24,7 +24,14 @@ NULL
 #' lmrd(lmom)
 #'
 #' out <- annual.agg.pel(distrib="gpa",x=y,lmom=lmom)
-#'
+#' 
+#' ## TEST VECTOR TYPE INPUT
+#' y1 <- df2vec(y)
+#' out1  <- annual.agg.pel(distrib="gpa",x=y1,lmom=lmom)
+#' 
+#' if (!identical(out1,out)) stop("Something went wrong!") 
+#' 
+#' 
 
 annual.agg.pel <- function(distrib=c("exp","gam","gev","glo","gpa","gno","gum","kap","ln3","nor","pe3","wak","wei")[3],
                   x,lmom=lmom,dd.name="dd",dd_formatter="D%03d",aggr.name="aggr",
@@ -44,6 +51,9 @@ annual.agg.pel <- function(distrib=c("exp","gam","gev","glo","gpa","gno","gum","
   ###
 
   
+  ####
+  if (is.vector(x)) x <- vec2df(x,aggr.name=aggr.name,dd.name=dd.name,dd_formatter=dd_formatter)
+  ####
   ####
   x <- as.data.frame(x)
   for(it in names(dds)) {

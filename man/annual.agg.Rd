@@ -22,6 +22,7 @@ annual.agg(
   filter = lapply(dd, function(dd) {     rep(1, dd)/dd }),
   method = "convolution",
   sides = 1,
+  return_vector = FALSE,
   ...
 )
 
@@ -51,6 +52,8 @@ yearly.agg(x, time, ...)
 \item{aggr.name, dd.name, index.name}{optional column names of function results. See function usage.}
 
 \item{filter, method, sides, ...}{further arguments for \code{stats::\link[stats]{filter}}}
+
+\item{return_vector}{logical. If \code{TRUE} function return a vector through \code{\link{df2vec}}. Default is \code{FALSE}.}
 }
 \value{
 a data frame or similar with index (e,g. year or year-month), duration (column name: \code{"dd"})  
@@ -69,6 +72,12 @@ x <- PRECIPITATION$B8570
 
 out <- annual.agg(x,time)
 out2 <- yearly.agg(x,time)
+
+
+outv <- annual.agg(x,time,return_vector=TRUE)
+outv1 <- vec2df(outv)
+
+if (!identical(out,outv1)) stop("Something went wrong!")
 
 library(lmom)
 library(dplyr)

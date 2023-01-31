@@ -5,14 +5,22 @@
 \alias{yearly.agg.samlmu}
 \title{Sample L-Moments of annual maxima or minima values}
 \usage{
-annual.agg.samlmu(x, aggr.name = "aggr", dd.name = "dd", ...)
+annual.agg.samlmu(
+  x,
+  aggr.name = "aggr",
+  dd.name = "dd",
+  dd_formatter = "\%03d",
+  ...
+)
 
 yearly.agg.samlmu(x, ...)
 }
 \arguments{
-\item{x}{object returned by \code{\link{annual.agg}} or \code{\link{yearly.agg}}}
+\item{x}{object returned by \code{\link{annual.agg}} or \code{\link{yearly.agg}} or a vector which will be processed through \code{\link{vec2df}}}
 
 \item{aggr.name, dd.name}{optional column mane for \code{x}. See function usage.}
+
+\item{dd_formatter}{argument used by \code{\link{vec2df}}}
 
 \item{...}{further arguments for \code{\link{samlmu}}}
 }
@@ -32,6 +40,22 @@ x <- PRECIPITATION$B8570
 
 y <- annual.agg(x,dd=1:10,time)
 out <- annual.agg.samlmu(y)
+
+y1 <- df2vec(y)
+out1 <- annual.agg.samlmu(y1)
+
+if (max(abs(out1-out),na.rm=TRUE)>1e-8) stop("Something went wrong!") 
+for (it in names(attributes(out))) {
+
+   if (!identical(attr(out,it),attr(out1,it))) {
+      msg <- sprintf("Something went wrong in \%s!",it)
+      stop(msg)
+   
+   }
+     
+  
+}
+
 
 lmrd(out)
 
@@ -97,5 +121,5 @@ ggg
 
 }
 \seealso{
-\code{\link{samlmu}]}
+\code{\link{samlmu}}
 }

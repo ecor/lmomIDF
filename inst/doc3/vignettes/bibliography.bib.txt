@@ -1,0 +1,216 @@
+@article{Courty2019,
+doi = {10.1088/1748-9326/ab370a},
+url = {https://dx.doi.org/10.1088/1748-9326/ab370a},
+year = {2019},
+month = {aug},
+publisher = {IOP Publishing},
+volume = {14},
+number = {8},
+pages = {084045},
+author = {Laurent G Courty and Robert L Wilby and John K Hillier and Louise J Slater},
+title = {Intensity-duration-frequency curves at the global scale},
+journal = {Environmental Research Letters},
+abstract = {Intensity-duration-frequency (IDF) curves usefully quantify extreme precipitation over various durations and return periods for engineering design. Unfortunately, sparse, infrequent, or short observations hinder the creation of robust IDF curves in many locations. This paper presents the first global, multi-temporal (1–360 h) dataset of generalized extreme value (GEV) parameters at 31 km resolution dubbed PXR-2 (Parametrized eXtreme Rain). Using these data we generalize site-specific studies to show that that GEV parameters typically scale robustly with event duration (r2 &gt; 0.88). Thus, we propose a universal IDF formula that allows estimates of rainfall intensity for a continuous range of durations (PXR-4). This parameter scaling property opens the door to estimating sub-daily IDF from daily records. We evaluate this characteristic for selected global cities and a high-density rain gauge network in the United Kingdom. We find that intensities estimated with PXR-4 are within ±20% of PXR-2 for durations ranging between 2 and 360 h. PXR is immediately usable by earth scientists studying global precipitation extremes and a promising proof-of-concept for engineers designing infrastructure in data-scarce regions.}
+}
+
+
+@Article{Heidari2020,
+AUTHOR = {Heidari, Hadi and Arabi, Mazdak and Ghanbari, Mahshid and Warziniack, Travis},
+TITLE = {A Probabilistic Approach for Characterization of Sub-Annual Socioeconomic Drought Intensity-Duration-Frequency (IDF) Relationships in a Changing Environment},
+JOURNAL = {Water},
+VOLUME = {12},
+YEAR = {2020},
+NUMBER = {6},
+ARTICLE-NUMBER = {1522},
+URL = {https://www.mdpi.com/2073-4441/12/6/1522},
+ISSN = {2073-4441},
+ABSTRACT = {Changes in climate, land use, and population can increase annual and interannual variability of socioeconomic droughts in water-scarce regions. This study develops a probabilistic approach to improve characterization of sub-annual socioeconomic drought intensity-duration-frequency (IDF) relationships under shifts in water supply and demand conditions. A mixture Gamma-Generalized Pareto (Gamma-GPD) model is proposed to enhance characterization of both the non-extreme and extreme socioeconomic droughts. Subsequently, the mixture model is used to determine sub-annual socioeconomic drought intensity-duration-frequency (IDF) relationships, return period, amplification factor, and drought risk. The application of the framework is demonstrated for the City of Fort Collins (Colorado, USA) water supply system. The water demand and supply time series for the 1985&ndash;2065 are estimated using the Integrated Urban water Model (IUWM) and the Soil and Water Assessment Tool (SWAT), respectively, with climate forcing from statistically downscaled CMIP5 projections. The results from the case study indicate that the mixture model leads to enhanced estimation of sub-annual socioeconomic drought frequencies, particularly for extreme events. The probabilistic approach presented in this study provides a procedure to update sub-annual socioeconomic drought IDF curves while taking into account changes in water supply and demand conditions.},
+DOI = {10.3390/w12061522}
+}
+
+@dataset{courty_laurent_g_2019_2616438,
+  author       = {Courty, Laurent G. and
+                  Wilby, Robert L. and
+                  Hillier, John K. and
+                  Slater, Louise J.},
+  title        = {Parametrized eXtreme Rain (PXR)},
+  month        = mar,
+  year         = 2019,
+  publisher    = {Zenodo},
+  version      = {2.0.0},
+  doi          = {10.5281/zenodo.2616438},
+  url          = {https://doi.org/10.5281/zenodo.2616438}
+}
+
+@misc{noratiqah_mohd_ariff_2016_1123891,
+  author       = {Noratiqah Mohd Ariff and
+                  Abdul Aziz Jemain and
+                  Mohd Aftar Abu Bakar},
+  title        = {{Regionalization of IDF Curves with L-Moments for 
+                   Storm Events}},
+  month        = mar,
+  year         = 2016,
+  publisher    = {Zenodo},
+  version      = 10004224,
+  doi          = {10.5281/zenodo.1123891},
+  url          = {https://doi.org/10.5281/zenodo.1123891}
+}
+
+﻿@Article{Sun2019,
+author={Sun, Yabin
+and Wendi, Dadiyorto
+and Kim, Dong Eon
+and Liong, Shie-Yui},
+title={Deriving intensity--duration--frequency (IDF) curves using downscaled in situ rainfall assimilated with remote sensing data},
+journal={Geoscience Letters},
+year={2019},
+month={Dec},
+day={12},
+volume={6},
+number={1},
+pages={17},
+abstract={The rainfall intensity--duration--frequency (IDF) curves play an important role in water resources engineering and management. The applications of IDF curves range from assessing rainfall events, classifying climatic regimes, to deriving design storms and assisting in designing urban drainage systems, etc. The deriving procedure of IDF curves, however, requires long-term historical rainfall observations, whereas lack of fine-timescale rainfall records (e.g. sub-daily) often results in less reliable IDF curves. This paper presents the utilization of remote sensing sub-daily rainfall, i.e. Global Satellite Mapping of Precipitation (GSMaP), integrated with the Bartlett-Lewis rectangular pulses (BLRP) model, to disaggregate the daily in situ rainfall, which is then further used to derive more reliable IDF curves. Application of the proposed method in Singapore indicates that the disaggregated hourly rainfall, preserving both the hourly and daily statistic characteristics, produces IDF curves with significantly improved accuracy; on average over 70{\%} of RMSE is reduced as compared to the IDF curves derived from daily rainfall observations.},
+issn={2196-4092},
+doi={10.1186/s40562-019-0147-x},
+url={https://doi.org/10.1186/s40562-019-0147-x}
+}
+
+
+@Article{Sparks2017,
+    author = {Adam H Sparks and Tomislav Hengl and Andrew Nelson},
+    title = {{GSODR}: Global Summary Daily Weather Data in R},
+    doi = {10.21105/joss.00177},
+    year = {2017},
+    month = {feb},
+    publisher = {The Open Journal},
+    volume = {2},
+    number = {10},
+    journal = {The Journal of Open Source Software},
+  }
+
+@article{Koutsoyiannis1998,
+title = {A mathematical framework for studying rainfall intensity-duration-frequency relationships},
+journal = {Journal of Hydrology},
+volume = {206},
+number = {1},
+pages = {118-135},
+year = {1998},
+issn = {0022-1694},
+doi = {https://doi.org/10.1016/S0022-1694(98)00097-3},
+url = {https://www.sciencedirect.com/science/article/pii/S0022169498000973},
+author = {Demetris Koutsoyiannis and Demosthenes Kozonis and Alexandros Manetas},
+keywords = {Hydrologic statistics, Rainfall intensity, Flood design, Flood risk},
+abstract = {A general formula for the rainfall intensity-duration-frequency (idf) relationship, consistent with the theoretical probabilistic foundation of the analysis of rainfall maxima is proposed. Specific forms of this formula are explicitly derived from the underlying probability distribution function of maximum intensities. Several appropriate distribution functions are studied for that purpose. Simple analytical approximations of the most common distribution functions are presented, which are incorporated in, and allow mathematically convenient expressions of idf relationships. Also, two methods for a reliable parameter estimation of idf relationships are proposed. The proposed formulation of idf relationships constitutes an efficient parameterisation, facilitating the description of the geographical variability and regionalisation of idf curves. Moreover, it allows incorporating data from non-recording stations, thus remedying the problem of establishing idf curves in places with a sparse network of rain-recording stations, using data of the denser network of non-recording stations. Case studies, based on data of a significant part of Greece, briefly presented in the paper, clarify the methodology for the construction and regionalisation of the idf relationship.}
+}
+
+
+﻿@Article{DePaola2014,
+author={De Paola, Francesco
+and Giugni, Maurizio
+and Topa, Maria Elena
+and Bucchignani, Edoardo},
+title={Intensity-Duration-Frequency (IDF) rainfall curves, for data series and climate projection in African cities},
+journal={SpringerPlus},
+year={2014},
+month={Mar},
+day={09},
+volume={3},
+number={1},
+pages={133},
+abstract={Changes in the hydrologic cycle due to increase in greenhouse gases cause variations in intensity, duration, and frequency of precipitation events. Quantifying the potential effects of climate change and adapting to them is one way to reduce urban vulnerability. Since rainfall characteristics are often used to design water structures, reviewing and updating rainfall characteristics (i.e., Intensity--Duration--Frequency (IDF) curves) for future climate scenarios is necessary (Reg Environ Change 13(1 Supplement):25-33, 2013).},
+issn={2193-1801},
+doi={10.1186/2193-1801-3-133},
+url={https://doi.org/10.1186/2193-1801-3-133}
+}
+
+@Article{DePaola2014,
+author={De Paola, Francesco
+and Giugni, Maurizio
+and Topa, Maria Elena
+and Bucchignani, Edoardo},
+title={Intensity-Duration-Frequency (IDF) rainfall curves, for data series and climate projection in African cities},
+journal={SpringerPlus},
+year={2014},
+month={Mar},
+day={09},
+volume={3},
+number={1},
+pages={133},
+abstract={Changes in the hydrologic cycle due to increase in greenhouse gases cause variations in intensity, duration, and frequency of precipitation events. Quantifying the potential effects of climate change and adapting to them is one way to reduce urban vulnerability. Since rainfall characteristics are often used to design water structures, reviewing and updating rainfall characteristics (i.e., Intensity--Duration--Frequency (IDF) curves) for future climate scenarios is necessary (Reg Environ Change 13(1 Supplement):25-33, 2013).},
+issn={2193-1801},
+doi={10.1186/2193-1801-3-133},
+url={https://doi.org/10.1186/2193-1801-3-133}
+}
+
+
+@article{Pilon1991,
+title = {Regional analysis of annual maxima precipitation using L-moments},
+journal = {Atmospheric Research},
+volume = {27},
+number = {1},
+pages = {81-92},
+year = {1991},
+issn = {0169-8095},
+doi = {https://doi.org/10.1016/0169-8095(91)90009-L},
+url = {https://www.sciencedirect.com/science/article/pii/016980959190009L},
+author = {Paul J. Pilon and K. Adamowski and Y. Alila},
+abstract = {Current precipitation frequency analysis used as a standard for urban runoff calculations are out of date. In this paper, the form of the distribution governing rainfall intensity of various durations in a regional context is investigated using the method of L-moments. The results indicate that the currently used Gumbel type I distribution is not generally valid for all the durations considered in this analysis. The form of the distribution is dependent on the duration of the event being considered.}
+}
+
+@Manual{Hosking20219lmom,
+    title = {L-Moments},
+    author = {J. R. M. Hosking},
+    year = {2019},
+    note = {R package, version 2.8},
+    url = {https://CRAN.R-project.org/package=lmom},
+  }
+
+
+
+@article{Ariff2016RegionalizationOI,
+  title={Regionalization of IDF Curves with L-Moments for Storm Events},
+  author={Noratiqah Mohd Ariff and Abdul Aziz Jemain and Mohd Aftar Abu Bakar},
+  journal={World Academy of Science, Engineering and Technology, International Journal of Mathematical, Computational, Physical, Electrical and Computer Engineering},
+  year={2016},
+  volume={10},
+  pages={217-223}
+}
+
+
+ @misc{gevwiki,
+    author = "{Wikipedia contributors}",
+    title = "Generalized extreme value distribution --- {Wikipedia}{,} The Free Encyclopedia",
+    year = "2022",
+    url = "https://en.wikipedia.org/w/index.php?title=Generalized_extreme_value_distribution&oldid=1118970041",
+    note = "[Online; accessed 17-January-2023]"
+  }
+
+
+@article{Marsaglia2003,
+ title={Evaluating Kolmogorov’s Distribution},
+ volume={8},
+ url={https://www.jstatsoft.org/index.php/jss/article/view/v008i18},
+ doi={10.18637/jss.v008.i18},
+ abstract={Kolmogorov’s goodness-of-fit measure, D&amp;lt;sub&amp;gt;n&amp;lt;/sub&amp;gt; , for a sample CDF has consistently been set aside for methods such as the D&amp;lt;sup&amp;gt;+&amp;lt;/sup&amp;gt;&amp;lt;sub&amp;gt;n&amp;lt;/sub&amp;gt; or D&amp;lt;sup&amp;gt;-&amp;lt;/sup&amp;gt;&amp;lt;sub&amp;gt;n&amp;lt;/sub&amp;gt; of Smirnov, primarily, it seems, because of the difficulty of computing the distribution of D&amp;lt;sub&amp;gt;n&amp;lt;/sub&amp;gt; . As far as we know, no easy way to compute that distribution has ever been provided in the 70+ years since Kolmogorov’s fundamental paper. We provide one here, a C procedure that provides Pr(D&amp;lt;sub&amp;gt;n&amp;lt;/sub&amp;gt; &amp;lt; d) with 13-15 digit accuracy for n ranging from 2 to at least 16000. We assess the (rather slow) approach to limiting form, and because computing time can become excessive for probabilities&amp;gt;.999 with n’s of several thousand, we provide a quick approximation that gives accuracy to the 7th digit for such cases.},
+ number={18},
+ journal={Journal of Statistical Software},
+ author={Marsaglia, George and Tsang, Wai Wan and Wang, Jingbo},
+ year={2003},
+ pages={1–4}
+}
+
+
+@Article{Markiewicz2021,
+AUTHOR = {Markiewicz, Iwona},
+TITLE = {Depth&ndash;Duration&ndash;Frequency Relationship Model of Extreme Precipitation in Flood Risk Assessment in the Upper Vistula Basin},
+JOURNAL = {Water},
+VOLUME = {13},
+YEAR = {2021},
+NUMBER = {23},
+ARTICLE-NUMBER = {3439},
+URL = {https://www.mdpi.com/2073-4441/13/23/3439},
+ISSN = {2073-4441},
+ABSTRACT = {The Upper Vistula Basin is a flood-prone region in the summer season (May&ndash;October) due to intensive rainfall. From the point of view of water management, it is particularly important to assess the variability in this main factor of flood risk, as well as to establish the depth&ndash;duration&ndash;frequency (DDF) relationship for maximum precipitation, this having not yet been derived for the region. The analysis of a 68-year (1951&ndash;2018) data series of summer maximum precipitation collected by 11 meteorological stations showed the series&rsquo; stationarity, which supports the conclusion that there is no increase in the risk of rainfall floods due to the intensification of extreme precipitation. A new approach is proposed for the determination of the DDF relationship, where the best-fitted distribution for each station is selected from among the set of candidate distributions, instead of adopting one fixed distribution for all stations. This approach increases the accuracy of the DDF relationships for individual stations as compared to the commonly used approach. In particular, the traditionally used Gumbel distribution turns out to be not well fitted to the investigated data series, and the advantage of the recently popular GEV distribution is not significant.},
+DOI = {10.3390/w13233439}
+}
+

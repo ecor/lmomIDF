@@ -35,7 +35,7 @@ yearly.agg.pel_lmom(lmom, ...)
 \arguments{
 \item{distrib}{character string incating the probability distribution to fit}
 
-\item{x}{object returned by \code{\link{annual.agg}} or \code{\link{yearly.agg}}}
+\item{x}{object returned by \code{\link{annual.agg}} or \code{\link{yearly.agg}} or a vector which will be processed through \code{\link{vec2df}}}
 
 \item{lmom}{object returned by \code{\link{annual.agg.samlmu}} or \code{\link{yearly.agg.samlmu}} or \code{\link{annual.agg.idf.samlmu}}}
 
@@ -62,5 +62,12 @@ lmom <- annual.agg.samlmu(y)
 lmrd(lmom)
 
 out <- annual.agg.pel(distrib="gpa",x=y,lmom=lmom)
+
+## TEST VECTOR TYPE INPUT
+y1 <- df2vec(y)
+out1  <- annual.agg.pel(distrib="gpa",x=y1,lmom=lmom)
+
+if (!identical(out1,out)) stop("Something went wrong!") 
+
 
 }
