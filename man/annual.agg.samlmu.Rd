@@ -10,6 +10,7 @@ annual.agg.samlmu(
   aggr.name = "aggr",
   dd.name = "dd",
   dd_formatter = "\%03d",
+  nn = names(x),
   ...
 )
 

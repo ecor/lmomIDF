@@ -104,10 +104,10 @@ NULL
 #' }
 #'   
 #'
-annual.agg.samlmu <- function(x,aggr.name="aggr",dd.name="dd",dd_formatter="%03d",...) {
+annual.agg.samlmu <- function(x,aggr.name="aggr",dd.name="dd",dd_formatter="%03d",nn=names(x),...) {
   
   
-  if (is.vector(x)) x <- vec2df(x,aggr.name=aggr.name,dd.name=dd.name,dd_formatter=dd_formatter)
+  if (is.vector(x)) x <- vec2df(x,nn=nn,aggr.name=aggr.name,dd.name=dd.name,dd_formatter=dd_formatter)
   x <- as.data.frame(x)
   u <- unique(x[,dd.name])
   out <- x[,aggr.name] %>% split(x[,dd.name]) %>% lapply(FUN=samlmu,...)

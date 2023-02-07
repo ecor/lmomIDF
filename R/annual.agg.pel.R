@@ -7,6 +7,7 @@ NULL
 #' @param aggr.name,dd.name optional column names for \code{x} and/or \code{lmom}. See function usage.
 #' @param dd_formatter string formatter for duration in the function value
 #' @param alternative,exact arguments for \code{\link{ks.test}}
+#' @param nnx names of \code{x}
 #' @param ... further arguments  
 #' @importFrom stats ks.test
 #' @importFrom lmomPi cdf pel_lmom
@@ -34,9 +35,9 @@ NULL
 #' 
 
 annual.agg.pel <- function(distrib=c("exp","gam","gev","glo","gpa","gno","gum","kap","ln3","nor","pe3","wak","wei")[3],
-                  x,lmom=lmom,dd.name="dd",dd_formatter="D%03d",aggr.name="aggr",
+                  x,lmom,dd.name="dd",dd_formatter="D%03d",aggr.name="aggr",
                           alternative = c("two.sided", "less", "greater"),
-                          exact = NULL,
+                          exact = NULL,nnx=names(x),
                   ...         
 ) {
   
@@ -46,19 +47,29 @@ annual.agg.pel <- function(distrib=c("exp","gam","gev","glo","gpa","gno","gum","
   names(dds) <- sprintf(dd_formatter,dds)
   
   
-  out <- apply(lmom,MARGIN=1,FUN=pel_lmom,distrib=distrib,simplify=FALSE)
+  if (all(is.na(lmom[,names(lmom)!=dd.name]))) {
+    
+    return(NULL)
+  }
+  lmomxxx <<- lmom
+  out <- apply(lmom[,!(names(lmom) %in% dd.name)],MARGIN=1,FUN=pel_lmom,distrib=distrib,simplify=FALSE)
   names(out) <- names(dds)
   ###
 
-  
+  xxa1 <<- x
+  nnx1 <<- nnx
   ####
-  if (is.vector(x)) x <- vec2df(x,aggr.name=aggr.name,dd.name=dd.name,dd_formatter=dd_formatter)
+  if (is.vector(x)) x <- vec2df(x,nn=nnx,aggr.name=aggr.name,dd.name=dd.name,dd_formatter=dd_formatter)
   ####
   ####
   x <- as.data.frame(x)
   for(it in names(dds)) {
     xval <- x[which(x[,dd.name]==dds[it]),aggr.name]
     attr(out[[it]],dd.name) <- dds[it]
+    ## 
+    itxx <<- it
+    paraxxx <<- out[[it]]
+    xvalxx <<- xval
     attr(out[[it]],"ks.test") <- ks.test(x=xval,y=cdf,para=out[[it]],alternative = alternative,exact=exact)
   }  
 

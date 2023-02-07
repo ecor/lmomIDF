@@ -15,6 +15,7 @@ annual.agg.idf.samlmu(
   col = "blue",
   like_lmom = TRUE,
   dd_formatter = "\%03d",
+  nnx = names(x),
   ...
 )
 
@@ -36,6 +37,8 @@ yearly.agg.idf.samlmu(x, ...)
 \item{like_lmom}{logical. If it is \code{TRUE}, function returns a data frame formatted like \code{lmom} to be used for \code{\link{annual.agg.pel}}, otherwise it returns the outcome of \code{\link{samlmu}} .}
 
 \item{dd_formatter}{argument used by \code{\link{vec2df}}}
+
+\item{nnx}{names of \code{x}}
 
 \item{...}{further arguments for \code{\link{samlmu}}}
 }

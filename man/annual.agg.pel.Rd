@@ -19,6 +19,7 @@ annual.agg.pel(
   aggr.name = "aggr",
   alternative = c("two.sided", "less", "greater"),
   exact = NULL,
+  nnx = names(x),
   ...
 )
 
@@ -44,6 +45,8 @@ yearly.agg.pel_lmom(lmom, ...)
 \item{aggr.name, dd.name}{optional column names for \code{x} and/or \code{lmom}. See function usage.}
 
 \item{alternative, exact}{arguments for \code{\link{ks.test}}}
+
+\item{nnx}{names of \code{x}}
 
 \item{...}{further arguments}
 }

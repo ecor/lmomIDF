@@ -9,6 +9,7 @@ NULL
 #' @param col argument for \code{ggplot2} functions. It is used if \code{use_ggplot==TRUE}. 
 #' @param like_lmom logical. If it is \code{TRUE}, function returns a data frame formatted like \code{lmom} to be used for \code{\link{annual.agg.pel}}, otherwise it returns the outcome of \code{\link{samlmu}} .
 #' @param dd_formatter argument used by \code{\link{vec2df}}
+#' @param nnx names of \code{x}
 #' @param ... further arguments for \code{\link{samlmu}}
 #'
 #' @return a data frame containing the L-moment of rainfall intensity for each duration category. Plus attributes, see function code. 
@@ -106,9 +107,9 @@ NULL
 
 
 
-annual.agg.idf.samlmu <- function(x,lmom=NULL,aggr.name="aggr",dd.name="dd",nn_moms=c("l_1","l_2"),use_ggplot=TRUE,col="blue",like_lmom=TRUE,dd_formatter="%03d",...) {
+annual.agg.idf.samlmu <- function(x,lmom=NULL,aggr.name="aggr",dd.name="dd",nn_moms=c("l_1","l_2"),use_ggplot=TRUE,col="blue",like_lmom=TRUE,dd_formatter="%03d",nnx=names(x),...) {
 
-  if (is.vector(x)) x <- vec2df(x,aggr.name=aggr.name,dd.name=dd.name,dd_formatter=dd_formatter)
+  if (is.vector(x)) x <- vec2df(x,nn=nnx,aggr.name=aggr.name,dd.name=dd.name,dd_formatter=dd_formatter)
   x <- as.data.frame(x)
   if  (is.null(lmom)) {
 
@@ -132,15 +133,30 @@ annual.agg.idf.samlmu <- function(x,lmom=NULL,aggr.name="aggr",dd.name="dd",nn_m
   } else {
     condna <- FALSE
   }
+  
+  ## INSET CONSTRAINT 
+  ## https://stats.stackexchange.com/questions/3143/linear-model-with-constraints
   outz1 <<- out
   if (condna) out$log_lm <- 0 
   outz2 <<- out
   fit <- glm(out)
+  ###
+  outd <- out
+  outd$log_lm <- out$log_lm+out$log_dd
+  fitd <- glm(outd)
+  ####
   if (condna) {
     out$log_lm <- NA
     n_idf <- as.numeric(NA)
+    p_idf <- as.numeric(NA)
+    n_ddf <- as.numeric(NA)
+    p_ddf <- as.numeric(NA)
+    
   }  else {
     n_idf <- as.numeric(fit$coef["log_dd"])
+    p_idf <- as.numeric(summary(fit)$coef["log_dd",4])
+    n_ddf <- as.numeric(fitd$coef["log_dd"])
+    p_ddf <- as.numeric(summary(fitd)$coef["log_dd",4])
   }
   
   if (use_ggplot & !condna) {
@@ -167,6 +183,9 @@ annual.agg.idf.samlmu <- function(x,lmom=NULL,aggr.name="aggr",dd.name="dd",nn_m
   } else {
 
     out0['n_idf'] <- n_idf
+    out0['p_idf'] <- p_idf
+    out0['n_ddf'] <- n_ddf
+    out0['p_ddf'] <- p_ddf
   }
 
   attr(out0,"lmom") <- lmom
@@ -174,7 +193,9 @@ annual.agg.idf.samlmu <- function(x,lmom=NULL,aggr.name="aggr",dd.name="dd",nn_m
   attr(out0,"fit") <- fit
   attr(out0,"gg") <- gg
   attr(out0,"n_idf") <- n_idf
-
+  attr(out0,"p_idf") <- p_idf
+  attr(out0,"n_ddf") <- n_ddf
+  attr(out0,"p_ddf") <- p_ddf
   ##str(out)
 
 
