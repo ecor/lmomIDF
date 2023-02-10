@@ -12,6 +12,7 @@ NULL
 #' @param n_idf exponemts (e.g. generally mamed \code{n}) of Intansity Diration Curve 
 #' @param remove_distrib_from_boxplot logical. It is used if \code{use_ggplot==TRUE}.  Default see usage. If it \code{TRUE} distribution quantiles are removed from box plots.  
 #' @param idf_curve logical. It is used if \code{use_ggplot==TRUE}.  Default see usage. If it \code{TRUE}. IDF (intensity-durantion-frequancy) and DDF (depth-durantion-frequancy) curves are added to the respective boxplots 
+#' @param possible_return_null logical. Defalt is \code{FALSE} , otherwise it retrns \code{NULL} with no errors if \code{f} or \code{para} are \code{NULL} or zero-length.
 #' @param ... further arguments. 
 #'
 #'
@@ -67,9 +68,17 @@ NULL
 #' out <- annual.agg.qua(f=c(1:49)/50,para=z)
 #' }
 
-annual.agg.qua <- function(f=(0:10)/10,para,f.name="f",aggr.name=NA,dd.name=NA,use_ggplot=TRUE,xlab="duration",ylab="value",fill=c("#ca0020","#0571b0","#bababa","#bababb","#bababc"),color_idf=brewer.pal(name="YlOrRd",n=length(f)), nrun=5,n_idf=NULL,remove_distrib_from_boxplot=FALSE,idf_curve=TRUE,...)
+annual.agg.qua <- function(f=(0:10)/10,para,f.name="f",aggr.name=NA,dd.name=NA,use_ggplot=TRUE,xlab="duration",ylab="value",fill=c("#ca0020","#0571b0","#bababa","#bababb","#bababc"),color_idf=brewer.pal(name="YlOrRd",n=length(f)), nrun=5,n_idf=NULL,remove_distrib_from_boxplot=FALSE,idf_curve=TRUE,possible_return_null=FALSE,...)
   
 {
+  
+  ###
+  ###
+  if ((length(f)==0) | (length(para)==0)) {
+    
+    if (possible_return_null) return(NULL)
+    
+  }
   
   
   out <- lapply(para,FUN=qua,f=f) %>% lapply(data.frame,f=f) %>% reshape2::melt(id="f") ##%>% reshape2::melt()

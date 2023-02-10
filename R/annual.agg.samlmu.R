@@ -4,6 +4,7 @@ NULL
 #' @param x object returned by \code{\link{annual.agg}} or \code{\link{yearly.agg}} or a vector which will be processed through \code{\link{vec2df}}
 #' @param aggr.name,dd.name optional column mane for \code{x}. See function usage.
 #' @param dd_formatter argument used by \code{\link{vec2df}}
+#' @param nn names of \code{x}
 #' @param ... further arguments for \code{\link{samlmu}}
 #'
 #' @export

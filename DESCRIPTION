@@ -10,7 +10,7 @@ Date: 2023-02-02
 Repository: CRAN
 Depends: R(>= 3.5.0),lmomPi
 Imports:dplyr,magrittr,reshape2,lmom,stringr,ggplot2,RColorBrewer
-Suggests: rasterList,lmomRFA,RMAWGEN,GSODR,data.table,knitr,knitcitations,dygraphs,zoo,lubridate,rmarkdown,mapview,raster,terra,chirps,leaflet,sf,terra,tidyterra
+Suggests: rasterList,lmomRFA,RMAWGEN,GSODR,data.table,knitr,knitcitations,dygraphs,zoo,lubridate,rmarkdown,mapview,raster,terra,chirps,leaflet,sf,tidyterra,lmomco
 VignetteBuilder: knitr
 RoxygenNote: 7.1.2
 NeedsCompilation: no

@@ -20,6 +20,7 @@ annual.agg.qua(
   n_idf = NULL,
   remove_distrib_from_boxplot = FALSE,
   idf_curve = TRUE,
+  possible_return_null = FALSE,
   ...
 )
 
@@ -45,6 +46,8 @@ yearly.agg.qua(...)
 \item{remove_distrib_from_boxplot}{logical. It is used if \code{use_ggplot==TRUE}.  Default see usage. If it \code{TRUE} distribution quantiles are removed from box plots.}
 
 \item{idf_curve}{logical. It is used if \code{use_ggplot==TRUE}.  Default see usage. If it \code{TRUE}. IDF (intensity-durantion-frequancy) and DDF (depth-durantion-frequancy) curves are added to the respective boxplots}
+
+\item{possible_return_null}{logical. Defalt is \code{FALSE} , otherwise it retrns \code{NULL} with no errors if \code{f} or \code{para} are \code{NULL} or zero-length.}
 
 \item{...}{further arguments.}
 }

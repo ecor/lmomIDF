@@ -29,8 +29,8 @@ knitr::opts_chunk$set(
 <!-- --- -->
 ## CHIRPS datasets in its APIs in R 
 
-Climate Hazards Group InfraRed Precipitation with Station data (CHIRPS) (@Funk2015) is a 30+ year quasi-global rainfall dataset. Spanning 50 deg S-50 degN (and all longitudes), starting in 1981 to near-present, CHIRPS incorporates 0.05° resolution satellite imagery with in-situ station data to create gridded rainfall time series for trend analysis and seasonal drought monitoring. (see https://aquaknow.jrc.ec.europa.eu/en/acewater2-jrc-nepad-sanwatce-nepad-ceanwatce-nepad-wanwatce/dataset/daily-chirps-precipitation)
-(cite CHIRPS) (cte chirps R package)
+Climate Hazards Group InfraRed Precipitation with Station data (CHIRPS) (@Funk2015) is a 30+ year quasi-global rainfall dataset. Spanning 50 deg S-50 degN (and all longitudes), starting in 1981 to near-present, CHIRPS incorporates 0.05° resolution satellite imagery with in-situ station data to create gridded rainfall time series for trend analysis and seasonal drought monitoring. 
+In this vignatte CHIRPS data are downloaded through the specific *chirps* R package (@deSousa2020) working as an API. 
 
 ```{r chirps,fig.width=7}
 
@@ -201,7 +201,7 @@ source("~/local/rpackages/jrc/lmomIDF/R/annual.agg.idf.samlmu.R")
 lmom_filename <-  "/home/ecor/local/rpackages/jrc/lmomIDF/inst/ext_data/chirps_test_area_aggr/chirps_annual_maxima_lmom_v01.grd"
 cond_lmom <- FALSE
 cond_lmom <- !file.exists(lmom_filename) | cond_lmom
-cond_lmom <- TRUE
+##cond_lmom <- TRUE
 if (cond_lmom) {
   lmom_map <- app(out0aggr,fun=annual.agg.idf.samlmu,like_lmom=FALSE,use_ggplot=FALSE,filename=lmom_filename,overwrite=TRUE,nmom=5)
 } else {
@@ -211,7 +211,7 @@ if (cond_lmom) {
 
 }
 
-## CHACK L-MOMENT VALIDITY with "lmomco" package
+## CHECK L-MOMENT VALIDITY with "lmomco" package
 library(lmomco)
 lmom_valid <- app(lmom_map,fun=function(x){are.lmom.valid(vec2lmom(x[1:5]))})
 ## check lmom_map[(lmom_valid!=1) & !(is.na(lmom_map[[1]])) & !(is.na(lmom_map[[2]]))]
@@ -259,7 +259,7 @@ gpvd
 ```
 
 Finally, the values of precipitation maxima at the different durations are fitted with the GEV probability distributions (@gevwiki) with parameters derived by the estimated L-moments trhrough the IDF curves. 
-Tha analysis is performet transforming the *SpatRaster* objects defined within  *terra* R package (@terraRpackage) into the RasterStack ones defined in *raster* R package (@rasterRpackage) in order to make use of *rasterList* package (@RasterListPackage) .
+The analysis is performet transforming the *SpatRaster* objects defined within  *terra* R package (@terraRpackage) into the RasterStack ones defined in *raster* R package (@rasterRpackage) in order to make use of *rasterList* package (@RasterListPackage) .
 Therefore the goodness of fit for each verification is verified with a Kolgomorov-Smirnov test (@Marsaglia2003). 
 
 ```{r ann.max.samlum.1981.2010_gev_param,fig.width=7, paged.print=FALSE,eval=TRUE}
@@ -314,7 +314,7 @@ gev_para <- RasterListApply(x=rasterList(stack(out0aggr)),lmom=lmom_rl,FUN=annua
 ###Error in pelxxx("gev", lmom) : pelgev: L-moments invalid
 ####> 
 ## MAP OF p-values of ks-test:
-source("~/local/rpackages/jrc/rasterList/R/stack.R")
+###source("~/local/rpackages/jrc/rasterList/R/stack.R")
 gev_pvalue <- stack(gev_para,FUN=function(x,dd_formatter="D%03d",dd.name="dd") {
   ou2 <- attr(x,"lmom")
   if (!is.data.frame(ou2)) {
@@ -332,7 +332,7 @@ gpv_gev
 
 
 ```
-Test acceptance ($p>0.1$):
+Test acceptance ($p>0.1$) for each duration category:
 
 ```{r ann.max.samlum.1981.2010_gev_param_test_passed,fig.width=7, paged.print=FALSE,eval=TRUE}
 
@@ -344,10 +344,99 @@ gpv_gev_passed
 
 
 ```
+
+
+Test acceptance ($min(p)>0.1$) for all duration categories:
+
+
+```{r ann.max.samlum.1981.2010_gev_param_test_passed2,fig.width=7, paged.print=FALSE,eval=TRUE}
+
+
+gev_pvalue_passed2 <- min(gev_pvalue)>0.1
+gev_gev_passed2 <- ggplot()+geom_spatraster(data = gev_pvalue_passed2)+theme_bw()
+gev_gev_passed2
+
+
+```
+
+Finally, quantiles refereed to specific return periods can be estimated as follows:
+
+
+```{r ann.max.samlum.1981.2010_qua,fig.width=7, ,fig.height=10,paged.print=FALSE,eval=TRUE}
+
+
+
+
+source("~/local/rpackages/jrc/lmomIDF/R/annual.agg.qua.R")
+source("~/local/rpackages/jrc/lmomIDF/R/df2vec.R")
+library(raster)
+rt <- c(2,5,10,20,50,100,200)
+
+
+f <- 1-1/rt ##c(0.5,0.9)
+gev_qua_rl <- rasterList(gev_para,FUN=annual.agg.qua,f=f,use_ggplot=FALSE,possible_return_null=TRUE) ###    (f=f,para=z,use_gglopt=FALSE)
+gev_qua <- stack(gev_qua_rl,FUN=df2vec,index.name="f") %>% rast()
+
+####
+gev_qua[!gev_pvalue_passed2] <- NA
+####
+
+nrow <- length(f)
+mm <- matrix(names(gev_qua),nrow=nrow) %>% t() 
+ggqua <- ggplot()+geom_spatraster(data = gev_qua[[mm]])+facet_wrap(~lyr,nrow=nrow)+theme_bw()
+##xvv <- 0:300
+##gg <- gg+scale_fill_gradientn(colors=ff(0:300),name="Precipitation Intensity [mm/day]")
+ggqua
+
+
+
+```
+
+Visualitazion as a web ma through *terra::plet* (@terraRpackage): 
+
+
+```{r ann.max.samlum.1981.2010_qua_plet,fig.width=7, ,fig.height=10,paged.print=FALSE,eval=TRUE}
+
+library(leaflet)
+
+
+
+gev1_qua  <- gev_qua
+gev1_qua[gev1_qua>400] <- NA
+
+ff2 <- function(x,colors=colz,values=gev1_qua[],probs=(0:10)/100,...) {
+  x <- x[]
+  df <- data.frame(prob=probs)
+  df$color <- colorRampPalette(colors)(nrow(df))
+  df$value <- quantile(values,probs=df$prob,type=3,na.rm=TRUE) ## sse help(quantile)
+   ###summary(quantile(probs=ecdf(values_)(values_),values_,type=3)-values_)
+  qq <- ecdf(values)(x)
+  
+  out <- colorRamp(colors,...)(qq)
+  outt <<- out
+ out2 <- rgb(red=out[,1],green=out[,2],blue=out[,3],maxColorValue=255)
+  
+  
+  return(out2)
+}
+
+
+
+
+
+
+
+plet(gev1_qua,1:nlyr(gev1_qua), tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap")[2], collapse=FALSE,shared=TRUE,legend="bottomleft") ##,col=ff2) %>% addScaleBar() #%>% lines(v, lwd=2, col="blue") 
+
+
+```
 # Further Reading 
 
 
 https://cran.r-project.org/web/views/ExtremeValue.html or https://github.com/cran-task-views/ExtremeValue/
+
+https://aquaknow.jrc.ec.europa.eu/en/acewater2-jrc-nepad-sanwatce-nepad-ceanwatce-nepad-wanwatce/dataset/daily-chirps-precipitation
+
 
 # References 
 

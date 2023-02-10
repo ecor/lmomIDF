@@ -32,6 +32,7 @@ NULL
 #' 
 vec2df <- function(x,nn=names(x),aggr.name="aggr",index.name="index",dd.name="dd",dd_formatter="D%03d",numeric_dd=TRUE,numeric_index=FALSE,return_tibble=TRUE) {
   
+  if (is.null(x)) return(NULL)
   if (length(x)!=length(nn)) stop("Mismatch between x and nn lengths")
   out <- data.frame(aggr=as.numeric(x))
   out$dd <- str_split(nn,"_") %>% sapply(FUN=function(x){x[1]})  

@@ -165,9 +165,9 @@ source("~/local/rpackages/jrc/lmomIDF/R/annual.agg.idf.samlmu.R")
 lmom_filename <-  "/home/ecor/local/rpackages/jrc/lmomIDF/inst/ext_data/chirps_test_area_aggr/chirps_annual_maxima_lmom_v01.grd"
 cond_lmom <- FALSE
 cond_lmom <- !file.exists(lmom_filename) | cond_lmom
-###cond_lmom <- TRUE
+##cond_lmom <- TRUE
 if (cond_lmom) {
-  lmom_map <- app(out0aggr,fun=annual.agg.idf.samlmu,like_lmom=FALSE,use_ggplot=FALSE,filename=lmom_filename,overwrite=TRUE)
+  lmom_map <- app(out0aggr,fun=annual.agg.idf.samlmu,like_lmom=FALSE,use_ggplot=FALSE,filename=lmom_filename,overwrite=TRUE,nmom=5)
 } else {
   
   
@@ -175,7 +175,14 @@ if (cond_lmom) {
 
 }
 
-
+## CHECK L-MOMENT VALIDITY with "lmomco" package
+library(lmomco)
+lmom_valid <- app(lmom_map,fun=function(x){are.lmom.valid(vec2lmom(x[1:5]))})
+## check lmom_map[(lmom_valid!=1) & !(is.na(lmom_map[[1]])) & !(is.na(lmom_map[[2]]))]
+## correction: 
+#lmom_map[(lmom_valid!=1) & !(is.na(lmom_map[[1]])) & !(is.na(lmom_map[[2]]))] <- NA
+lmom_map[(lmom_valid!=1)] <- NA
+####
 
 gl  <- ggplot()+geom_spatraster(data = lmom_map[[c("l_1","l_2")]])+facet_wrap(~lyr)+theme_bw()
 gl
@@ -215,17 +222,147 @@ library(raster)
 library(rasterList)
 library(stringr)
 # 
-# dd <- 1
+# dd <- c(1,2,5)
 # dds <- "D%03d" %>% sprintf(dd) 
 # lmom_s <- stack(lmom_map)[[c("l_1","l_2","t_3","t_4")]]
-# prec_s <- out0aggr[[str_detect(names(out0aggr),dds)]] %>% stack()
-# 
+#prec_s <- out0aggr[[str_detect(names(out0aggr),dds)]] %>% stack()
+ 
 # ## 
-# distrib="gev"
-# 
-# o <- lapply(X=list.files("~/local/rpackages/jrc/rasterList/R",pattern=".R",full.names=TRUE),FUN=source)
-# outs <- RasterListApply(x=rasterList(prec_s),y=rasterList(lmom_s),FUN=annual.agg.pel,distrib="gev")
+distrib="gev"
+#
 
+ddd <- sapply(str_split(names(out0aggr),"_"),function(w){w[1]}) %>% unique() %>% str_replace_all("[A-Z]","") %>% str_replace_all("[a-z]","") %>% as.numeric()
+lmom_rl <- stack(lmom_map) %>% rasterList(FUN=function(x,dd=ddd,pv=0.1,dd.name="dd"){ 
+    n_idf <- x["n_idf"]
+    n_idf[x["p_ddf"]>pv] <- (-1)
+    out <- data.frame(dd=dd) 
+    names(out)[names(out)=="dd"] <- dd.name
+    for (it in c("l_1","l_2")) {
+      
+      out[,it] <- x[it]*out[,dd.name]^n_idf
+      
+    } 
+    for (it in c("t_3","t_4")) {
+      
+      
+      out[,it] <- x[it]
+    }  
+    
+    return(out)
+    
+  })
+##lmom_rl <- rasterList(lmom_rl)
+
+# o <- lapply(X=list.files("~/local/rpackages/jrc/rasterList/R",pattern=".R",full.names=TRUE),FUN=source)
+source("~/local/rpackages/jrc/lmomIDF/R/annual.agg.pel.R")
+
+
+
+
+##outs <- RasterListApply(x=rasterList(stack(out0aggr)),lmom=lmom_rl,FUN=annual.agg.pel,distrib="gev",nnx=names(out0aggr))
+gev_para <- RasterListApply(x=rasterList(stack(out0aggr)),lmom=lmom_rl,FUN=annual.agg.pel,distrib="gev") ##,nnx=names(out0aggr))
+##lmom_valid2 <- app(lmom_map,fun=function(x){are.lmom.valid(vec2lmom(x[1:5]))})
+###Error in pelxxx("gev", lmom) : pelgev: L-moments invalid
+####> 
+## MAP OF p-values of ks-test:
+###source("~/local/rpackages/jrc/rasterList/R/stack.R")
+gev_pvalue <- stack(gev_para,FUN=function(x,dd_formatter="D%03d",dd.name="dd") {
+  ou2 <- attr(x,"lmom")
+  if (!is.data.frame(ou2)) {
+    ou3 <- NULL
+  } else {
+    ou3 <- ou2$p.value
+    names(ou3) <- sprintf(dd_formatter,ou2[,dd.name])
+  }
+  return(ou3)
+  }) %>% rast()
+
+gpv_gev <- ggplot()+geom_spatraster(data = gev_pvalue)+facet_wrap(~lyr)+theme_bw()
+gpv_gev
+
+
+
+
+## ----ann.max.samlum.1981.2010_gev_param_test_passed,fig.width=7, paged.print=FALSE,eval=TRUE----
+
+
+gev_pvalue_passed <- gev_pvalue>0.1
+
+gpv_gev_passed <- ggplot()+geom_spatraster(data = gev_pvalue_passed)+facet_wrap(~lyr)+theme_bw()
+gpv_gev_passed
+
+
+
+## ----ann.max.samlum.1981.2010_gev_param_test_passed2,fig.width=7, paged.print=FALSE,eval=TRUE----
+
+
+gev_pvalue_passed2 <- min(gev_pvalue)>0.1
+gev_gev_passed2 <- ggplot()+geom_spatraster(data = gev_pvalue_passed2)+theme_bw()
+gev_gev_passed2
+
+
+
+## ----ann.max.samlum.1981.2010_qua,fig.width=7, ,fig.height=10,paged.print=FALSE,eval=TRUE----
+
+
+
+
+source("~/local/rpackages/jrc/lmomIDF/R/annual.agg.qua.R")
+source("~/local/rpackages/jrc/lmomIDF/R/df2vec.R")
+library(raster)
+rt <- c(2,5,10,20,50,100,200)
+
+
+f <- 1-1/rt ##c(0.5,0.9)
+gev_qua_rl <- rasterList(gev_para,FUN=annual.agg.qua,f=f,use_ggplot=FALSE,possible_return_null=TRUE) ###    (f=f,para=z,use_gglopt=FALSE)
+gev_qua <- stack(gev_qua_rl,FUN=df2vec,index.name="f") %>% rast()
+
+####
+gev_qua[!gev_pvalue_passed2] <- NA
+####
+
+nrow <- length(f)
+mm <- matrix(names(gev_qua),nrow=nrow) %>% t() 
+ggqua <- ggplot()+geom_spatraster(data = gev_qua[[mm]])+facet_wrap(~lyr,nrow=nrow)+theme_bw()
+##xvv <- 0:300
+##gg <- gg+scale_fill_gradientn(colors=ff(0:300),name="Precipitation Intensity [mm/day]")
+ggqua
+
+
+
+
+## ----ann.max.samlum.1981.2010_qua_plet,fig.width=7, ,fig.height=10,paged.print=FALSE,eval=TRUE----
+
+library(leaflet)
+
+
+
+gev1_qua  <- gev_qua
+gev1_qua[gev1_qua>400] <- NA
+
+ff2 <- function(x,colors=colz,values=gev1_qua[],probs=(0:10)/100,...) {
+  x <- x[]
+  df <- data.frame(prob=probs)
+  df$color <- colorRampPalette(colors)(nrow(df))
+  df$value <- quantile(values,probs=df$prob,type=3,na.rm=TRUE) ## sse help(quantile)
+   ###summary(quantile(probs=ecdf(values_)(values_),values_,type=3)-values_)
+  qq <- ecdf(values)(x)
+  
+  out <- colorRamp(colors,...)(qq)
+  outt <<- out
+ out2 <- rgb(red=out[,1],green=out[,2],blue=out[,3],maxColorValue=255)
+  
+  
+  return(out2)
+}
+
+
+
+
+
+
+
+plet(gev1_qua,1:nlyr(gev1_qua), tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap")[2], collapse=FALSE,shared=TRUE,legend="bottomleft") ##,col=ff2) %>% addScaleBar() #%>% lines(v, lwd=2, col="blue") 
 
 
 

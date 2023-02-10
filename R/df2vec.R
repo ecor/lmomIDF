@@ -24,6 +24,7 @@ NULL
 #' 
 df2vec <- function(x,aggr.name="aggr",index.name="index",dd.name="dd",dd_formatter="D%03d") {
   
+  if (is.null(x)) return(NULL)
   x <- as.data.frame(x)
   
   if (is.numeric(x[,dd.name])) x[,dd.name] <- sprintf(dd_formatter,x[,dd.name])

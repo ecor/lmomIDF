@@ -71,7 +71,8 @@ if (max(abs(out1-out),na.rm=TRUE)>1e-8) stop("Something went wrong!")
 for (it in names(attributes(out))) {
    if (it=="gg") { ## TO CHECK
    } else if (is.list(attr(out,it))) for (itn in names(attr(out,it))) {
-         if (!identical(attr(out,it)[[itn]],attr(out1,it)[[itn]]) & !(itn \%in\% c("model","family","terms"))) { ## TO CHECK
+         if (!identical(attr(out,it)[[itn]],attr(out1,it)[[itn]]) 
+         & !(itn \%in\% c("model","family","terms"))) { ## TO CHECK
             msg <- sprintf("Something went wrong in \%s  \%s!",it,itn)
             stop(msg)
          }

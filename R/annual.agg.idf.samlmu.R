@@ -43,7 +43,8 @@ NULL
 #' for (it in names(attributes(out))) {
 #'    if (it=="gg") { ## TO CHECK
 #'    } else if (is.list(attr(out,it))) for (itn in names(attr(out,it))) {
-#'          if (!identical(attr(out,it)[[itn]],attr(out1,it)[[itn]]) & !(itn %in% c("model","family","terms"))) { ## TO CHECK
+#'          if (!identical(attr(out,it)[[itn]],attr(out1,it)[[itn]]) 
+#'          & !(itn %in% c("model","family","terms"))) { ## TO CHECK
 #'             msg <- sprintf("Something went wrong in %s  %s!",it,itn)
 #'             stop(msg)
 #'          }
@@ -115,8 +116,8 @@ annual.agg.idf.samlmu <- function(x,lmom=NULL,aggr.name="aggr",dd.name="dd",nn_m
 
     lmom <- annual.agg.samlmu(x=x,aggr.name=aggr.name,dd.name=dd.name,...)
   }
-  xx1 <<- x
-  lmom1 <<- lmom
+ ###EC 20230209 xx1 <<- x
+  ###EC 20230209 lmom1 <<- lmom
   ## INSERT POWER-LAW FORMULA
   out <- lmom[,c(nn_moms,dd.name)] %>% reshape2::melt(id=dd.name)
   ######
@@ -136,9 +137,9 @@ annual.agg.idf.samlmu <- function(x,lmom=NULL,aggr.name="aggr",dd.name="dd",nn_m
   
   ## INSET CONSTRAINT 
   ## https://stats.stackexchange.com/questions/3143/linear-model-with-constraints
-  outz1 <<- out
+  ###EC 20230209outz1 <<- out
   if (condna) out$log_lm <- 0 
-  outz2 <<- out
+  ###EC 20230209outz2 <<- out
   fit <- glm(out)
   ###
   outd <- out

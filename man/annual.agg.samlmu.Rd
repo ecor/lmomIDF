@@ -23,6 +23,8 @@ yearly.agg.samlmu(x, ...)
 
 \item{dd_formatter}{argument used by \code{\link{vec2df}}}
 
+\item{nn}{names of \code{x}}
+
 \item{...}{further arguments for \code{\link{samlmu}}}
 }
 \value{

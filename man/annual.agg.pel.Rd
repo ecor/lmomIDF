@@ -13,7 +13,7 @@ annual.agg.pel(
   distrib = c("exp", "gam", "gev", "glo", "gpa", "gno", "gum", "kap", "ln3", "nor",
     "pe3", "wak", "wei")[3],
   x,
-  lmom = lmom,
+  lmom,
   dd.name = "dd",
   dd_formatter = "D\%03d",
   aggr.name = "aggr",

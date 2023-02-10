@@ -51,13 +51,13 @@ annual.agg.pel <- function(distrib=c("exp","gam","gev","glo","gpa","gno","gum","
     
     return(NULL)
   }
-  lmomxxx <<- lmom
+  ###EC 20230209lmomxxx <<- lmom
   out <- apply(lmom[,!(names(lmom) %in% dd.name)],MARGIN=1,FUN=pel_lmom,distrib=distrib,simplify=FALSE)
   names(out) <- names(dds)
   ###
 
-  xxa1 <<- x
-  nnx1 <<- nnx
+  ###EC 20230209xxa1 <<- x
+  ###EC 20230209nnx1 <<- nnx
   ####
   if (is.vector(x)) x <- vec2df(x,nn=nnx,aggr.name=aggr.name,dd.name=dd.name,dd_formatter=dd_formatter)
   ####
@@ -67,9 +67,9 @@ annual.agg.pel <- function(distrib=c("exp","gam","gev","glo","gpa","gno","gum","
     xval <- x[which(x[,dd.name]==dds[it]),aggr.name]
     attr(out[[it]],dd.name) <- dds[it]
     ## 
-    itxx <<- it
-    paraxxx <<- out[[it]]
-    xvalxx <<- xval
+    ###EC 20230209itxx <<- it
+    ###EC 20230209paraxxx <<- out[[it]]
+    ###EC 20230209xvalxx <<- xval
     attr(out[[it]],"ks.test") <- ks.test(x=xval,y=cdf,para=out[[it]],alternative = alternative,exact=exact)
   }  
 
