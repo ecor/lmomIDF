@@ -1,5 +1,5 @@
 ---
-title: "Mapping extreme storm events with Intensity-Duration-Frequency (IDF) using spatially gridded datasets (under development)"
+title: "Mapping extreme storm events with Intensity-Duration-Frequency (IDF) using spatially gridded datasets"
 author: "Emanuele Cordano"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -29,8 +29,10 @@ knitr::opts_chunk$set(
 <!-- --- -->
 ## CHIRPS datasets in its APIs in R 
 
-Climate Hazards Group InfraRed Precipitation with Station data (CHIRPS) (@Funk2015) is a 30+ year quasi-global rainfall dataset. Spanning 50 deg S-50 degN (and all longitudes), starting in 1981 to near-present, CHIRPS incorporates 0.05° resolution satellite imagery with in-situ station data to create gridded rainfall time series for trend analysis and seasonal drought monitoring. 
-In this vignatte CHIRPS data are downloaded through the specific *chirps* R package (@deSousa2020) working as an API. 
+Climate Hazards Group InfraRed Precipitation with Station data (CHIRPS) (@Funk2015) is a 30+ year quasi-global rainfall dataset. Spanning 50 deg S-50 degN (and all longitudes), starting in 1981 to near-present, CHIRPS incorporates 0.05° resolution satellite imagery with in-situ station data to create spatially gridded rainfall time series for trend analysis and seasonal drought monitoring. It provides daily, monthly, pentadal, and decadal temporal rainfall resolution registers with a spatial resolution of 0.05° (∼5.3 km), and quasi-global coverage (within 50°S, 50°N, 180°W, and 180°E).  The U.S. Geological Survey and the Climate Hazards Group at the University of California in Santa Barbara and observations from the Climate Prediction Center and the National Climatic Data Center were involved in developing the CHIRPS dataset. Rainfall estimations are created from two thermal infrared satellite observation archives using the cold cloud duration. Their calibration process uses the TRMM and in situ observations of precipitation (@Funk2015,@Funk2015essd72752015). 
+It has been working from 1981 to the present day, and is mainly used to study drought (@Funk2014).
+CHIRPS dataset is available from https://www.chc.ucsb.edu/data/chirps/.
+For statistical analysis performed by R, like in this vignette, daily values by CHIRPS data can be downloaded and imported directly into the R environment through the specific **chirps** R package (@deSousa2020) working as an API:
 
 ```{r chirps,fig.width=7}
 
@@ -54,7 +56,7 @@ r <- rast(xmin=xmin, xmax=xmax,
 
 r[] <- 0
 mapview::mapview(raster::raster(r),alpha=0.2)
-###plet(r,alpha=0.2,tiles="Streets")
+
 
 years <- 1982:2021
 chirps_filenames <- "/home/ecor/local/data/climate/jrc/lmomIDF_example_ext_data/chirps_test_area/chirps_%d.grd" %>% sprintf(years)
@@ -113,7 +115,7 @@ if (cond) {
   out0aggr <- rast(aggr_filename)
 }
 ###
-out0aggr[out0aggr<0] <- NA
+out0aggr[out0aggr<0] <- NA ## Mandatory
 time(out0aggr,tstep="years") <- str_split(names(out0aggr),"_") %>% sapply(FUN=function(x){x[2]}) %>% as.numeric()
 units(out0aggr) <- "mm day -1"
 varnames(out0aggr) <- "Rainfall Intensity"
@@ -184,10 +186,12 @@ Here is an interactive map:
 library(leaflet)
 out1aggr  <- out0aggr
 out1aggr[out1aggr>400] <- NA
-plet(out1aggr,1:nlyr(out0aggr), tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap")[2], collapse=FALSE,shared=TRUE,legend="bottomleft",col=ff) %>% addScaleBar() #%>% lines(v, lwd=2, col="blue") 
+plet(out1aggr,1:nlyr(out0aggr), tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap")[2], collapse=FALSE,shared=TRUE,legend="bottomleft") %>% addScaleBar() #%>% lines(v, lwd=2, col="blue")  #%>% lines(v, lwd=2, col="blue") 
 
 ```
 
+
+Results show a straight line  between Arabian Peninsula and the southern point of Sinai Peninsula. Along this line, variation amomng adjacent cells look unrealistic and can be difficulty assumed as real. Most probably, it would be due to an error in the spatial interpolation, in a biniding the results of two moving windows regression area (@Funk2015essd72752015)
 
 ### IDF and L-moment estimation 
 
@@ -197,7 +201,7 @@ Assuming a reference period from 1981 to 2010, L-moments are computed as follows
 
 library(lmomIDF)
 library(terra)
-source("~/local/rpackages/jrc/lmomIDF/R/annual.agg.idf.samlmu.R")
+
 lmom_filename <-  "/home/ecor/local/rpackages/jrc/lmomIDF/inst/ext_data/chirps_test_area_aggr/chirps_annual_maxima_lmom_v01.grd"
 cond_lmom <- FALSE
 cond_lmom <- !file.exists(lmom_filename) | cond_lmom
@@ -231,9 +235,9 @@ gt3  <- ggplot()+geom_spatraster(data = lmom_map[[c("t_3","t_4")]])+facet_wrap(~
 gt3
 ```
 
-Finally, the exponent $n$ (CITATION TO ADD) is: 
+Finally, the exponent $n$ (@Monjo2009@Monjo2016) of power-law IDF curves (e.g. @Koutsoyiannis1998,@Monjo2009,@DePaola2014,@Markiewicz2021,@idfcurveswiki) is (IDF curves estimated with storm event of 1,2 and 5 days duration): 
 
-```{r ann.max.samlum.1981.2010_n_idf,fig.width=7, paged.print=FALSE,eval=TRUE}
+```{r ann.max.samlmu.1981.2010_n_idf,fig.width=7, paged.print=FALSE,eval=TRUE}
 
 sp_n_idf <- lmom_map[[c("n_idf")]]
 sp_p_idf <- lmom_map[[c("p_idf")]]
@@ -249,7 +253,10 @@ gn
 ```
 
 
-```{r ann.max.samlum.1981.2010_p_ddf,fig.width=7, paged.print=FALSE,eval=TRUE}
+According to @Monjo2016 , being the exponent $n$ between -0.6 and -1  ($-0.6 \leq n<-1$) reveals the storm events in the study region are higly irregularly with rapid  evolution n (e.g. showers,
+thunderstorms, etc.).
+
+```{r ann.max.samlmu.1981.2010_p_ddf,fig.width=7, paged.print=FALSE,eval=TRUE}
 
      
 gpvd <- ggplot()+geom_spatraster(data = sp_p_ddf)+facet_wrap(~lyr)+theme_bw()
@@ -259,26 +266,18 @@ gpvd
 ```
 
 Finally, the values of precipitation maxima at the different durations are fitted with the GEV probability distributions (@gevwiki) with parameters derived by the estimated L-moments trhrough the IDF curves. 
-The analysis is performet transforming the *SpatRaster* objects defined within  *terra* R package (@terraRpackage) into the RasterStack ones defined in *raster* R package (@rasterRpackage) in order to make use of *rasterList* package (@RasterListPackage) .
+The analysis is performed by transforming the *SpatRaster* objects defined within  **terra** R package (@terraRpackage) into the RasterStack ones defined in **raster** R package (@rasterRpackage) in order to make use of **rasterList** package (@rasterListRPackage) .
 Therefore the goodness of fit for each verification is verified with a Kolgomorov-Smirnov test (@Marsaglia2003). 
 
-```{r ann.max.samlum.1981.2010_gev_param,fig.width=7, paged.print=FALSE,eval=TRUE}
+```{r ann.max.samlmu.1981.2010_gev_param,fig.width=7, paged.print=FALSE,eval=TRUE}
 
-###source("~/local/rpackages/jrc/lmomIDF/R/annual.agg.pel.R")
-#out <- annual.agg.pel(distrib="gev",x=y,lmom=lmom)
-###  out <- annual.agg.pel(distrib="gpa",x=y,lmom=lmom)
+
 library(raster)
-library(rasterList)
+library(rasterList) ## RasterList >= 0.5.15
 library(stringr)
-# 
-# dd <- c(1,2,5)
-# dds <- "D%03d" %>% sprintf(dd) 
-# lmom_s <- stack(lmom_map)[[c("l_1","l_2","t_3","t_4")]]
-#prec_s <- out0aggr[[str_detect(names(out0aggr),dds)]] %>% stack()
- 
-# ## 
+
 distrib="gev"
-#
+
 
 ddd <- sapply(str_split(names(out0aggr),"_"),function(w){w[1]}) %>% unique() %>% str_replace_all("[A-Z]","") %>% str_replace_all("[a-z]","") %>% as.numeric()
 lmom_rl <- stack(lmom_map) %>% rasterList(FUN=function(x,dd=ddd,pv=0.1,dd.name="dd"){ 
@@ -300,21 +299,10 @@ lmom_rl <- stack(lmom_map) %>% rasterList(FUN=function(x,dd=ddd,pv=0.1,dd.name="
     return(out)
     
   })
-##lmom_rl <- rasterList(lmom_rl)
-
-# o <- lapply(X=list.files("~/local/rpackages/jrc/rasterList/R",pattern=".R",full.names=TRUE),FUN=source)
-source("~/local/rpackages/jrc/lmomIDF/R/annual.agg.pel.R")
 
 
+gev_para <- RasterListApply(x=rasterList(stack(out0aggr)),lmom=lmom_rl,FUN=annual.agg.pel,distrib="gev") 
 
-
-##outs <- RasterListApply(x=rasterList(stack(out0aggr)),lmom=lmom_rl,FUN=annual.agg.pel,distrib="gev",nnx=names(out0aggr))
-gev_para <- RasterListApply(x=rasterList(stack(out0aggr)),lmom=lmom_rl,FUN=annual.agg.pel,distrib="gev") ##,nnx=names(out0aggr))
-##lmom_valid2 <- app(lmom_map,fun=function(x){are.lmom.valid(vec2lmom(x[1:5]))})
-###Error in pelxxx("gev", lmom) : pelgev: L-moments invalid
-####> 
-## MAP OF p-values of ks-test:
-###source("~/local/rpackages/jrc/rasterList/R/stack.R")
 gev_pvalue <- stack(gev_para,FUN=function(x,dd_formatter="D%03d",dd.name="dd") {
   ou2 <- attr(x,"lmom")
   if (!is.data.frame(ou2)) {
@@ -359,7 +347,7 @@ gev_gev_passed2
 
 ```
 
-Finally, quantiles refereed to specific return periods can be estimated as follows:
+Finally, quantiles of maximum precipitation referred to specific return periods can be estimated as follows:
 
 
 ```{r ann.max.samlum.1981.2010_qua,fig.width=7, ,fig.height=10,paged.print=FALSE,eval=TRUE}
@@ -367,8 +355,6 @@ Finally, quantiles refereed to specific return periods can be estimated as follo
 
 
 
-source("~/local/rpackages/jrc/lmomIDF/R/annual.agg.qua.R")
-source("~/local/rpackages/jrc/lmomIDF/R/df2vec.R")
 library(raster)
 rt <- c(2,5,10,20,50,100,200)
 
@@ -430,12 +416,32 @@ plet(gev1_qua,1:nlyr(gev1_qua), tiles=c("Streets", "Esri.WorldImagery", "OpenTop
 
 
 ```
-# Further Reading 
 
 
-https://cran.r-project.org/web/views/ExtremeValue.html or https://github.com/cran-task-views/ExtremeValue/
+# Conclusions and the way forward.
 
-https://aquaknow.jrc.ec.europa.eu/en/acewater2-jrc-nepad-sanwatce-nepad-ceanwatce-nepad-wanwatce/dataset/daily-chirps-precipitation
+
+The vignette presents a procedure to create for the estimated return periods of precipitation with the method of IDF curves coupled with L-Moments. Results shows the presence of the highly irregular events with rapid evolution and can be around 120 mm/day with a return period of 20 years (duration 1 day)  in the highland areas and 
+greater than 200 mm/day with a return period of 200 (duration 1 day)  in some highland areas (e.g. Sinai peninsula). The return periods are estimated through the GEV (Genaralized Extreme Value) probability distribution.  
+In several widespread cells the probability distribution fitting performed through a Kolgormov-Smirnov test, do not pass ($p$-value $<0.1$)  . These cells contain *NA* values.  Further investigations are addressed to understand which $NA$-value cells are "false" positive (type I error), in case of spatial stationarity and ergodicity, $10%$ of false positive can be expected, or biases due to other properties (e.g. in the Nile delta area).
+
+
+
+# Further Material
+
+Further useful contents with URLs and/or link to documents are: 
+
+- https://cran.r-project.org/web/views/ExtremeValue.html or https://github.com/cran-task-views/ExtremeValue/ ;
+
+- https://aquaknow.jrc.ec.europa.eu/en/acewater2-jrc-nepad-sanwatce-nepad-ceanwatce-nepad-wanwatce/dataset/daily-chirps-precipitation ;
+
+- https://climateknowledgeportal.worldbank.org/country/saudi-arabia/extremes ;
+
+- https://climateknowledgeportal.worldbank.org/country/egypt/extremes
+
+The list and URLs and/or references will be further updated.
+
+
 
 
 # References 

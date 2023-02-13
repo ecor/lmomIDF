@@ -29,7 +29,7 @@ r <- rast(xmin=xmin, xmax=xmax,
 
 r[] <- 0
 mapview::mapview(raster::raster(r),alpha=0.2)
-###plet(r,alpha=0.2,tiles="Streets")
+
 
 years <- 1982:2021
 chirps_filenames <- "/home/ecor/local/data/climate/jrc/lmomIDF_example_ext_data/chirps_test_area/chirps_%d.grd" %>% sprintf(years)
@@ -86,7 +86,7 @@ if (cond) {
   out0aggr <- rast(aggr_filename)
 }
 ###
-out0aggr[out0aggr<0] <- NA
+out0aggr[out0aggr<0] <- NA ## Mandatory
 time(out0aggr,tstep="years") <- str_split(names(out0aggr),"_") %>% sapply(FUN=function(x){x[2]}) %>% as.numeric()
 units(out0aggr) <- "mm day -1"
 varnames(out0aggr) <- "Rainfall Intensity"
@@ -154,14 +154,14 @@ gg
 library(leaflet)
 out1aggr  <- out0aggr
 out1aggr[out1aggr>400] <- NA
-plet(out1aggr,1:nlyr(out0aggr), tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap")[2], collapse=FALSE,shared=TRUE,legend="bottomleft",col=ff) %>% addScaleBar() #%>% lines(v, lwd=2, col="blue") 
+plet(out1aggr,1:nlyr(out0aggr), tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap")[2], collapse=FALSE,shared=TRUE,legend="bottomleft") %>% addScaleBar() #%>% lines(v, lwd=2, col="blue")  #%>% lines(v, lwd=2, col="blue") 
 
 
 ## ----ann.max.samlum.1981.2010,fig.width=7, paged.print=FALSE,eval=TRUE--------
 
 library(lmomIDF)
 library(terra)
-source("~/local/rpackages/jrc/lmomIDF/R/annual.agg.idf.samlmu.R")
+
 lmom_filename <-  "/home/ecor/local/rpackages/jrc/lmomIDF/inst/ext_data/chirps_test_area_aggr/chirps_annual_maxima_lmom_v01.grd"
 cond_lmom <- FALSE
 cond_lmom <- !file.exists(lmom_filename) | cond_lmom
@@ -191,7 +191,7 @@ gl
 gt3  <- ggplot()+geom_spatraster(data = lmom_map[[c("t_3","t_4")]])+facet_wrap(~lyr)+theme_bw()
 gt3
 
-## ----ann.max.samlum.1981.2010_n_idf,fig.width=7, paged.print=FALSE,eval=TRUE----
+## ----ann.max.samlmu.1981.2010_n_idf,fig.width=7, paged.print=FALSE,eval=TRUE----
 
 sp_n_idf <- lmom_map[[c("n_idf")]]
 sp_p_idf <- lmom_map[[c("p_idf")]]
@@ -205,7 +205,7 @@ gn
 
 
 
-## ----ann.max.samlum.1981.2010_p_ddf,fig.width=7, paged.print=FALSE,eval=TRUE----
+## ----ann.max.samlmu.1981.2010_p_ddf,fig.width=7, paged.print=FALSE,eval=TRUE----
 
      
 gpvd <- ggplot()+geom_spatraster(data = sp_p_ddf)+facet_wrap(~lyr)+theme_bw()
@@ -213,23 +213,15 @@ gpvd
 
 
 
-## ----ann.max.samlum.1981.2010_gev_param,fig.width=7, paged.print=FALSE,eval=TRUE----
+## ----ann.max.samlmu.1981.2010_gev_param,fig.width=7, paged.print=FALSE,eval=TRUE----
 
-###source("~/local/rpackages/jrc/lmomIDF/R/annual.agg.pel.R")
-#out <- annual.agg.pel(distrib="gev",x=y,lmom=lmom)
-###  out <- annual.agg.pel(distrib="gpa",x=y,lmom=lmom)
+
 library(raster)
-library(rasterList)
+library(rasterList) ## RasterList >= 0.5.15
 library(stringr)
-# 
-# dd <- c(1,2,5)
-# dds <- "D%03d" %>% sprintf(dd) 
-# lmom_s <- stack(lmom_map)[[c("l_1","l_2","t_3","t_4")]]
-#prec_s <- out0aggr[[str_detect(names(out0aggr),dds)]] %>% stack()
- 
-# ## 
+
 distrib="gev"
-#
+
 
 ddd <- sapply(str_split(names(out0aggr),"_"),function(w){w[1]}) %>% unique() %>% str_replace_all("[A-Z]","") %>% str_replace_all("[a-z]","") %>% as.numeric()
 lmom_rl <- stack(lmom_map) %>% rasterList(FUN=function(x,dd=ddd,pv=0.1,dd.name="dd"){ 
@@ -251,21 +243,10 @@ lmom_rl <- stack(lmom_map) %>% rasterList(FUN=function(x,dd=ddd,pv=0.1,dd.name="
     return(out)
     
   })
-##lmom_rl <- rasterList(lmom_rl)
-
-# o <- lapply(X=list.files("~/local/rpackages/jrc/rasterList/R",pattern=".R",full.names=TRUE),FUN=source)
-source("~/local/rpackages/jrc/lmomIDF/R/annual.agg.pel.R")
 
 
+gev_para <- RasterListApply(x=rasterList(stack(out0aggr)),lmom=lmom_rl,FUN=annual.agg.pel,distrib="gev") 
 
-
-##outs <- RasterListApply(x=rasterList(stack(out0aggr)),lmom=lmom_rl,FUN=annual.agg.pel,distrib="gev",nnx=names(out0aggr))
-gev_para <- RasterListApply(x=rasterList(stack(out0aggr)),lmom=lmom_rl,FUN=annual.agg.pel,distrib="gev") ##,nnx=names(out0aggr))
-##lmom_valid2 <- app(lmom_map,fun=function(x){are.lmom.valid(vec2lmom(x[1:5]))})
-###Error in pelxxx("gev", lmom) : pelgev: L-moments invalid
-####> 
-## MAP OF p-values of ks-test:
-###source("~/local/rpackages/jrc/rasterList/R/stack.R")
 gev_pvalue <- stack(gev_para,FUN=function(x,dd_formatter="D%03d",dd.name="dd") {
   ou2 <- attr(x,"lmom")
   if (!is.data.frame(ou2)) {
@@ -307,8 +288,6 @@ gev_gev_passed2
 
 
 
-source("~/local/rpackages/jrc/lmomIDF/R/annual.agg.qua.R")
-source("~/local/rpackages/jrc/lmomIDF/R/df2vec.R")
 library(raster)
 rt <- c(2,5,10,20,50,100,200)
 

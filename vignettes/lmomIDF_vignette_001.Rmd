@@ -366,7 +366,9 @@ Similar reading on which outcomes can be compared:
 
 - https://en.wikipedia.org/wiki/Intensity-duration-frequency_curve ;
 
-- https://www.engr.colostate.edu/~ramirez/ce_old/classes/cive322-Ramirez/IDF-Procedure.pdf
+- https://www.engr.colostate.edu/~ramirez/ce_old/classes/cive322-Ramirez/IDF-Procedure.pdf ;
+
+- https://www.mitma.gob.es/recursos_mfom/0610300.pdf (in Spanish).
 
 The list and URLs and/or references will be further updated.
 
