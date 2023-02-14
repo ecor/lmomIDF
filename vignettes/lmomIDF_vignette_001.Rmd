@@ -368,7 +368,9 @@ Similar reading on which outcomes can be compared:
 
 - https://www.engr.colostate.edu/~ramirez/ce_old/classes/cive322-Ramirez/IDF-Procedure.pdf ;
 
-- https://www.mitma.gob.es/recursos_mfom/0610300.pdf (in Spanish).
+- https://www.mitma.gob.es/recursos_mfom/0610300.pdf (in Spanish);
+
+- http://www.comune.laspezia.it/export/sites/SPEZIAnet/Aree_tematiche/Ambiente/Energia/Piano-dazione-locale-di-adattamento.pdf or https://interreg-maritime.eu/documents/374720/6676234/ADAPT_piano_locale_PP08_IT.pdf/40e2289f-ab37-4187-8c73-cf3eab8737dc?t=1581354178721 (from https://interreg-maritime.eu/web/adapt/-/piani-locali-di-adattamento , in Italian).
 
 The list and URLs and/or references will be further updated.
 

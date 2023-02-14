@@ -235,7 +235,7 @@ gt3  <- ggplot()+geom_spatraster(data = lmom_map[[c("t_3","t_4")]])+facet_wrap(~
 gt3
 ```
 
-Finally, the exponent $n$ (@Monjo2009@Monjo2016) of power-law IDF curves (e.g. @Koutsoyiannis1998,@Monjo2009,@DePaola2014,@Markiewicz2021,@idfcurveswiki) is (IDF curves estimated with storm event of 1,2 and 5 days duration): 
+Finally, the exponent $n$ (@Monjo2009@Monjo2016) of power-law IDF curves (e.g. @Koutsoyiannis1998,@Monjo2009,@DePaola2014,@Mirhosseini2013,@Markiewicz2021,@idfcurveswiki) is (IDF curves estimated with storm event of 1,2 and 5 days duration): 
 
 ```{r ann.max.samlmu.1981.2010_n_idf,fig.width=7, paged.print=FALSE,eval=TRUE}
 
