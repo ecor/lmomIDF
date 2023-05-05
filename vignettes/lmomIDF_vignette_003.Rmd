@@ -27,7 +27,7 @@ knitr::opts_chunk$set(
 <!-- bibliography: bibliography.bib -->
 
 <!-- --- -->
-## CHIRPS datasets in its APIs in R 
+## CHIRPS datasets and its APIs in R 
 
 Climate Hazards Group InfraRed Precipitation with Station data (CHIRPS) (@Funk2015) is a 30+ year quasi-global rainfall dataset. Spanning 50 deg S-50 degN (and all longitudes), starting in 1981 to near-present, CHIRPS incorporates 0.05° resolution satellite imagery with in-situ station data to create spatially gridded rainfall time series for trend analysis and seasonal drought monitoring. It provides daily, monthly, pentadal, and decadal temporal rainfall resolution registers with a spatial resolution of 0.05° (∼5.3 km), and quasi-global coverage (within 50°S, 50°N, 180°W, and 180°E).  The U.S. Geological Survey and the Climate Hazards Group at the University of California in Santa Barbara and observations from the Climate Prediction Center and the National Climatic Data Center were involved in developing the CHIRPS dataset. Rainfall estimations are created from two thermal infrared satellite observation archives using the cold cloud duration. Their calibration process uses the TRMM and in situ observations of precipitation (@Funk2015,@Funk2015essd72752015). 
 It has been working from 1981 to the present day, and is mainly used to study drought (@Funk2014).

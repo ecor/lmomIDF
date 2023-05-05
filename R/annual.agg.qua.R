@@ -159,7 +159,7 @@ annual.agg.qua <- function(f=(0:10)/10,para,f.name="f",aggr.name=NA,dd.name=NA,u
     nfills <- length(fill)
     if (ngroups>=nfills) fill[nfills:ngroups] <- fill[nfills]
     fill <- fill[1:ngroups]
-    gg <- ggplot()+geom_boxplot(aes(x=factor(dd1),y=aggr1,fill=group1),data=NULL)+theme_bw()
+    gg <- ggplot()+geom_boxplot(aes(x=(dd1),y=aggr1,group=dd1,fill=group1),data=NULL)+theme_bw()
     gg <- gg+xlab(xlab)+ylab(ylab)+scale_fill_manual(values=fill,name="samples")
     if (idf_curve) {
       gg <- gg+geom_line(aes(x=out[,dd.name],y=out[,aggr.name],group=factor(out[,f.name]),col=factor(out[,f.name])))
@@ -170,7 +170,7 @@ annual.agg.qua <- function(f=(0:10)/10,para,f.name="f",aggr.name=NA,dd.name=NA,u
     attr(out,"boxplot") <- gg
     ###
     aggr1_depth <- aggr1*dd1
-    gg_depth <- ggplot()+geom_boxplot(aes(x=factor(dd1),y=aggr1_depth,fill=group1),data=NULL)+theme_bw()
+    gg_depth <- ggplot()+geom_boxplot(aes(x=dd1,group=dd1,y=aggr1_depth,fill=group1),data=NULL)+theme_bw()
     gg_depth <- gg_depth+ylab(paste(ylab,"(depth)"))+xlab(xlab)+scale_fill_manual(values=fill,name="samples")
     if (idf_curve) {
       gg_depth <- gg_depth+geom_line(aes(x=out[,dd.name],y=out[,aggr.name]*out[,dd.name],group=factor(out[,f.name]),col=factor(out[,f.name])))
@@ -184,13 +184,15 @@ annual.agg.qua <- function(f=(0:10)/10,para,f.name="f",aggr.name=NA,dd.name=NA,u
     #####
     
     i_idf <- which(group1=="obs")
-    gg_idf <- ggplot()+geom_boxplot(aes(x=factor(dd1[i_idf]),y=aggr1[i_idf],fill=group1[i_idf]),data=NULL)+theme_bw()
-    gg_idf <- gg_idf+xlab(xlab)+ylab(ylab)+scale_fill_manual(values=fill,name="samples") 
+    gg_idf <- ggplot()+geom_boxplot(aes(x=(dd1[i_idf]),group=(dd1[i_idf]),y=aggr1[i_idf],fill=group1[i_idf]),data=NULL)
+    gg_idf <- gg_idf+theme_bw()+xlab(xlab)+ylab(ylab)+scale_fill_manual(values=fill,name="samples")
+   
     gg_idf <- gg_idf+geom_line(aes(x=out[,dd.name],y=out[,aggr.name],group=factor(out[,f.name]),col=factor(out[,f.name])))
     gg_idf <- gg_idf+scale_color_manual(values=color_idf,name="frequency")
+  
     attr(out,"idf") <- gg_idf
     
-    gg_ddf <- ggplot()+geom_boxplot(aes(x=factor(dd1[i_idf]),y=aggr1[i_idf]*dd1[i_idf],fill=group1[i_idf]),data=NULL)+theme_bw()
+    gg_ddf <- ggplot()+geom_boxplot(aes(x=(dd1[i_idf]),group=dd1[i_idf],y=aggr1[i_idf]*dd1[i_idf],fill=group1[i_idf]),data=NULL)+theme_bw()
     gg_ddf <- gg_ddf+ylab(paste(ylab,"(depth)"))+xlab(xlab)+scale_fill_manual(values=fill,name="samples") 
     gg_ddf <- gg_ddf+geom_line(aes(x=out[,dd.name],y=out[,aggr.name]*out[,dd.name],group=factor(out[,f.name]),col=factor(out[,f.name])))
     gg_ddf <- gg_ddf+scale_color_manual(values=color_idf,name="frequency")

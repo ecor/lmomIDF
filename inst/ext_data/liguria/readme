@@ -1,0 +1,22 @@
+https://omirl.regione.liguria.it/#/map
+
+https://ambientepub.regione.liguria.it/SiraQualMeteo/script/PubAccessoDatiMeteo.asp
+
+
+https://ambientepub.regione.liguria.it/SiraQualMeteo/script/PubAccessoDatiMeteoPost.asp?CodParam=PRECPBIWC1&CodTema=STAZIONE&IdEstraz=DE&Frequenza=HH&TipoOutput=HTML&Separatore=,&IdRichiesta=52052629137343&IdRichiestaCarto=&DataIniz=01/01/2014&InizOra=00:00&DataFine=31/12/2014&FineOra=23:59
+
+
+https://ambientepub.regione.liguria.it/SiraQualMeteo/script/PubAccessoDatiMeteoPost.asp?CodParam=PRECPBIWC1&CodTema=STAZIONE&IdEstraz=DE&Frequenza=HH&TipoOutput=HTML&Separatore=TAB&IdRichiesta=52052629139451&IdRichiestaCarto=&DataIniz=01/01/2021&InizOra=00:00&DataFine=31/01/2021&FineOra=23:59
+
+
+
+javascript:invia('ESTRAZ','52052629139451',document.forms[0]);
+javascript:invia('ESTRAZ','52052629139451',document.forms[0]);
+
+https://ambientepub.regione.liguria.it/SiraQualMeteo/script/PubAccessoDatiMeteo.asp
+http://www.banchedati.ambienteinliguria.it/index.php/aria/meteo
+
+
+
+## EMILIA ROMAGNA
+https://simc.arpae.it/dext3r/ ## vedere questo !!! 

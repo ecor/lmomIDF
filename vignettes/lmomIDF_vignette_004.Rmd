@@ -1,0 +1,494 @@
+---
+title: "Estimation of Intensity-Duration-Frequency (IDF) Curve through L-Moment method (Chiavari hourly dataset)"
+author: "Emanuele Cordano"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Estimation of Intensity-Duration-Frequency (IDF) Curve through L-Moment method (Chiavari hourly dataset)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: bibliography.bib
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  echo=TRUE,
+  warning = FALSE
+)
+###knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+<!-- --- -->
+<!-- title: "Untitled" -->
+<!-- output: github_document -->
+<!-- bibliography: bibliography.bib -->
+
+<!-- --- -->
+
+## Intensity-Duration-Frequency Curve (IDF)
+
+
+Intensity-duration-frequency (IDF) curves usefully quantify extreme precipitation over various duration, e.g. from 1 to 360 hours,  and return periods for engineering design, e.g. the interest in the time concentration or time-structure of the rainfall.  (e.g. @Courty2019,@Sun2019,@Markiewicz2021)
+Among the different mathematical formulations used in literature (CCC), the most commomt and used here in thiss package is  the following (@Koutsoyiannis1998): 
+<!--\qquad {-b \pm \sqrt{b^2-4ac} \over 2a} $$ -->
+$$ I =  a(T) D^{n} $$ 
+where $I$ is precipitation intensity [mm/hr or mm/day] , $D$ is the duration of the extreme precipitation (storm) event, and $a(T)$ is a coefficient depending on return period  $T$ or probability/frequency $f$ (where $f=1-{1 /over T$ where studying storm and flood events) and $n$ is an exponent assumed to be constant. The key concepts behind this theory are they: 
+
+- precipitation duration depth ($I \cdot D$) with a fixed return period and a short duration cannot be higher than the depth of an event with a longer duration and the same return period; 
+
+- Probability distribution of annual maximum precipitation average intensity maintains constant properties (e.g.  parametric definition) for different event time duration only some moments or parameters are scaled with duration.
+
+Therefore annual maxima precipitation are collected from daily  or hourly time series; for each duration a probability distributions (e.g. a GEV distribution (@gevwiki)) is fitted through a Maximum Likelihood Method or a L-Moment Method; goodness-of-fit is verified with a statistical test (e.g. Kolgorov-Smirnov test (@Marsaglia2003)); some moments and/or parameter are scaled with duration through a regression (e.g. a log-LM model); a probability distribution with new moments' and parameters' values is estimated for each duration; it can be tested versus original maxima time series. This package uses L-Moment method (@Hosking20219lmom,@Cordano2022lmomPi) for the fit of the probability distribution.
+Recently, @Heidari2020 extend also the concepts of IDF curves to droughts. This aspect can be used in this package but requires further investigations. 
+
+
+
+## An application with "chiavari" internal  dataset
+
+Here is an application of use of the package with 'chiavari' (see dataset documentation)(@chiavari,@chiavari_arpal):
+```{r chiavari00} 
+data(chiavari)
+```
+```{r chiavari001,eval=FALSE}
+help(chiavari)
+```
+```{r chiavari}
+
+library(lmomIDF) 
+
+data(chiavari) 
+library(dplyr)
+library(magrittr)
+# years <- 1937:2020
+# gsod_rds <- "/home/ecor/local/rpackages/jrc/lmomIDF/inst/ext_data/gsod_623180-99999.rds"
+# cond <- file.exists(gsod_rds) 
+# if (!cond) {
+#   gsod <- get_GSOD(years=years,station="623180-99999") ##ALEXANDRIA INTL EG 623180-99999
+#   saveRDS(gsod,file=gsod_rds)  
+# } else {
+#   gsod <- readRDS(file=gsod_rds)
+# }
+
+#####
+#####
+
+prec <- chiavari %>% dplyr::select(time,value,centralina,granularity_hr) ## %>%
+## mutate(YEARMODA=as.Date(YEARMODA,format="%Y-%m-%d")) 
+
+knitr::kable(rbind(head(prec),tail(prec)))
+
+### Dataset preparation 
+## insertion of rows so that all instants are equidistant (i.e. there is a constant time step) 
+## inserting any NA values of precipitation intensity
+
+
+dds <- range(prec$time)
+## See GSODR documentation
+yymmddhhs <- seq(from=dds[1],to=dds[2],by="hour")
+prec <- data.table::data.table(time=yymmddhhs) %>% full_join(prec)
+prec$value[is.na(prec$value)] <- 0
+## TO COMPLETE 
+##
+prec <- prec ##%>% group_by(time,centralina) %>% summarize(value=max(value,na.rm=TRUE),granularity_hr=max(granularity_hr,na.rm=TUE)) %>% ungroup()  
+
+
+
+```
+
+
+
+## Precipitation Time Series
+
+Time series can be visualized as follows: 
+
+```{r gsod_zoo, fig.width=7, paged.print=FALSE}
+
+library(zoo)
+library(dygraphs)
+
+time <- prec$time
+precz <- prec$value %>% as.zoo()
+index(precz) <- time
+main="PRECIPITATION Vs TIME"
+ylab="precipitation intensity [mm/hr]"
+xlab="time"
+
+dyd <- dygraph(precz,main=main,ylab=ylab,xlab=xlab) %>% dyRangeSelector()
+dyd
+
+
+```
+
+## Annual Maxima for fixed duration 
+
+Annual maxima with duration from 1 to 5 days are extracted:
+
+```{r ann.max,fig.width=7, paged.print=FALSE}
+
+library(lmomIDF)
+library(lubridate)
+
+dd <- c(1,3,6,12,24,48)
+ann.maxima <- annual.agg(x=prec$value,time=prec$time,aggr.fun=max,dd=dd)
+### values cannot be -Inf or +Inf
+ann.maxima$aggr[ann.maxima$aggr==-Inf] <- NA
+###
+str(ann.maxima)
+###
+ann.maxima.z <- ann.maxima %>% reshape2::dcast(index ~ dd)
+time <- as.numeric(ann.maxima.z$index)
+ann.maxima.z <- ann.maxima.z %>% dplyr::select(-index) %>% as.zoo()
+time1 <- as.Date("1980-01-01")
+year(time1) <- time
+index(ann.maxima.z) <- time1 
+
+
+main="MAXIMUM PRECIPITATION INTENSITY Vs TIME"
+ylab="precipitation intensity [mm/hr]"
+xlab="time"
+
+dyda <- dygraph(ann.maxima.z,main=main,ylab=ylab,xlab=xlab) %>% dyRangeSelector()
+dyda
+```
+
+## Study Period: 1981-2010  
+### L-moment estimation 
+
+Assuming a reference period from 1981 to 2010, L-moments are computed as follows (@Hosking20219lmom):
+
+```{r ann.max.samlum.1981.2010,fig.width=7, paged.print=FALSE}
+
+x <- ann.maxima %>% filter(as.numeric(index) %in% 1980:2010) 
+lmom <- annual.agg.samlmu(x)
+
+head(lmom)
+
+```
+### GEV fitting
+
+Through L-Moments , GEV probability distribution parameter were estimated:
+
+```{r ann.max.pel.1981.2010,fig.width=7, paged.print=FALSE}
+
+para <- annual.agg.pel(distrib="gev",x=x,lmom=lmom)
+
+para$D001
+attr(para,"lmom")
+
+
+```
+### IDF curve (1961-1990)
+
+Regressing logarithms the absolute 1nd and 2rd L-moments with the logarithm of duration, it is obtained: 
+
+```{r ann.max.qua.1981.2010,fig.width=7, paged.print=FALSE}
+
+
+lmom_idf_1981_2010 <- annual.agg.idf.samlmu(x,lmom=attr(para,"lmom"))
+####
+summary(attr(lmom_idf_1981_2010,"fit"))
+####
+attr(lmom_idf_1981_2010,"gg")
+
+```
+
+A IDF relations like $I =  a(T) D^{n}$, where $n$ is estimated to be `r signif(attr(lmom_idf_1981_2010,"n_idf"),5)`, has been assed:  
+
+```{r ann.max.idf.pel.1981.2010,fig.width=7, paged.print=FALSE}
+para_idf_1981_2010 <- annual.agg.pel(distrib="gev",x=x,lmom=lmom_idf_1981_2010)
+
+para_idf_1981_2010$D001
+attr(para_idf_1981_2010,"lmom")
+ 
+```
+
+*p.values* of Kolgormov-Smirov's test present values greater than `r signif(min(attr(para_idf_1981_2010,"lmom")$p.value),2)-0.01`.
+Here is a boxplot of precipitation intensity versus duration with IDF curves for some return periods (e.g. 2,5,10,...,100,... years)(legend reports frequencies/probabilities $f$ defined as $f=1- {1 \over T}$ with $T$ return period):
+```{r ann.max.idf.qua.1981.2010,fig.width=7, paged.print=FALSE}
+
+set.seed(560)
+rt <- c(2,5,10,20,50,100,200,500)
+f  <- 1-1/rt
+##f=c(0.5,0.8,0.9,0.95,0.98,0.99,0.999,0.9999)
+#library(RColorBrewer) ## FACTOR (migilioramento grafico)
+#library(ggplot2)
+#source("/home/ecor/local/rpackages/jrc/lmomIDF/R/annual.agg.qua.R")
+
+out_qua_1981_2010 <- annual.agg.qua(f=f,para=para_idf_1981_2010,remove_distrib_from_boxplot=TRUE)
+attr(out_qua_1981_2010,"idf")
+ 
+```
+And the analogous plot resenting precipitation depth with DDF (Depth-Duration-Frequency) curve : 
+```{r ann.max.idf.qua.depth.1981.2010,fig.width=7, paged.print=FALSE}
+
+attr(out_qua_1981_2010,"ddf")
+ 
+```
+
+
+
+
+
+
+
+
+
+
+
+
+## Study Period: 1991-2020
+### L-moment estimation
+
+Assuming a reference period from 1991 to 2020, L-moments are computed as follows (@Hosking20219lmom):
+
+```{r ann.max.samlum.1991.2020,fig.width=7, paged.print=FALSE}
+
+x <- ann.maxima %>% filter(as.numeric(index) %in% 1980:2020)
+lmom <- annual.agg.samlmu(x)
+
+head(lmom)
+
+```
+### GEV fitting
+
+Through the L-Moments , GEV probability distribution parameters are estimated as follows:
+
+```{r ann.max.pel.1991.2020,fig.width=7, paged.print=FALSE}
+
+para <- annual.agg.pel(distrib="gev",x=x,lmom=lmom)
+
+para$D001
+attr(para,"lmom")
+
+
+```
+
+### IDF curve (1991-2020)
+
+Regressing the logarithms the absolute 1nd and 2rd L-moments with the logarithm of duration, it is obtained:
+
+```{r ann.max.qua.1991.2020,fig.width=7, paged.print=FALSE}
+
+
+lmom_idf_1991_2020 <- annual.agg.idf.samlmu(x,lmom=attr(para,"lmom"))
+####
+summary(attr(lmom_idf_1991_2020,"fit"))
+####
+attr(lmom_idf_1991_2020,"gg")
+
+```
+
+A IDF relations like $I =  a(T) D^{n}$, where $n$ is estimated to be `r signif(attr(lmom_idf_1991_2020,"n_idf"),5)`, is then assessed:
+
+```{r ann.max.idf.pel.1991.2020,fig.width=7, paged.print=FALSE}
+para_idf_1991_2020 <- annual.agg.pel(distrib="gev",x=x,lmom=lmom_idf_1991_2020)
+
+para_idf_1991_2020$D001
+attr(para_idf_1991_2020,"lmom")
+
+```
+
+*p.values* of Kolgormov-Smirov's test present values greater than `r signif(min(attr(para_idf_1991_2020,"lmom")$p.value),2)-0.01`.
+Here is a boxplot of precipitation intensity versus duration with IDF curves for some return periods (e.g. 2,5,10,...,100,... years)(legend reports frequencies/probabilities $f$ defined as $f=1- {1 \over T}$ with $T$ return period):
+```{r ann.max.idf.qua.1991.2020,fig.width=7, paged.print=FALSE}
+
+set.seed(560)
+rt <- c(2,5,10,20,50,100,200,500)
+f  <- 1-1/rt
+##f=c(0.5,0.8,0.9,0.95,0.98,0.99,0.999,0.9999)
+out_qua_1991_2020 <- annual.agg.qua(f=f,para=para_idf_1991_2020,remove_distrib_from_boxplot=TRUE)
+attr(out_qua_1991_2020,"idf")
+
+```
+And the analogous plot resenting precipitation depth with DDF (Depth-Duration-Frequacy) curve :
+```{r ann.max.idf.qua.depth.1991.2020,fig.width=7, paged.print=FALSE}
+
+attr(out_qua_1991_2020,"ddf")
+
+```
+
+
+
+## Comparison between 1981-2010 and 1991-2020
+
+Finally,  the estimation of the function $a(T)$, varying with time periods, is affected by the choice of the reference periods: at a fixed return period (or frequency/probability) the quarantines estimating using 1991-2021 is greater than the one using 1981-2010 as reference time window, only in case of longer return periods. 
+
+```{r qqplot.idf,fig.width=7, paged.print=FALSE}
+
+qua_1991_2020 <- out_qua_1991_2020
+qua_1981_2010 <- out_qua_1981_2010
+
+attr(out_qua_1981_2010,"n_idf")
+attr(out_qua_1991_2020,"n_idf")
+
+qua_1981_2010$a <- qua_1981_2010$aggr/(qua_1981_2010$dd^attr(out_qua_1981_2010,"n_idf"))
+qua_1991_2020$a <- qua_1991_2020$aggr/(qua_1991_2020$dd^attr(out_qua_1991_2020,"n_idf"))
+#####
+qua_1981_2010 <- qua_1981_2010 %>% dplyr::select(-aggr)
+qua_1991_2020 <- qua_1991_2020 %>% dplyr::select(-aggr)
+#####
+
+names(qua_1981_2010)[names(qua_1981_2010)=="a"] <- "a_1981_2010"
+names(qua_1991_2020)[names(qua_1991_2020)=="a"] <- "a_1991_2020"
+#####
+
+
+# > ggplot()+geom_point(data=qua_both,aes(x=aggr_1981_2010,y=aggr_1991_2010))
+# Error in FUN(X[[i]], ...) : object 'aggr_1991_2010' not found
+# > ggplot()+geom_point(data=qua_both,aes(x=aggr_1981_2010,y=aggr_1991_2020))
+# > ggplot()+geom_point(data=qua_both,aes(x=aggr_1981_2010,y=aggr_1991_2020,group=dd))
+# > ggplot()+geom_point(data=qua_both,aes(x=aggr_1981_2010,y=aggr_1991_2020,group=dd,fill=dd))
+# > ggplot()+geom_point(data=qua_both,aes(x=aggr_1981_2010,y=aggr_1991_2020,group=dd,color=factor(dd)))
+# >
+#####
+qua_both <- full_join(qua_1981_2010,qua_1991_2020)
+
+#####
+library(ggplot2)
+library(RColorBrewer)
+
+gg <- ggplot()+geom_point(data=qua_both,aes(x=a_1981_2010,y=a_1991_2020,color=factor(f)))
+gg <- gg+xlab("Quantiles 1981-2010")+ylab("Quantiles 1991-2020")+theme_bw()+geom_abline()
+###
+col1 <- brewer.pal(name="YlGnBu",n=length(unique(qua_both$f))) %>% col2rgb()
+col2 <- brewer.pal(name="YlOrRd",n=length(unique(qua_both$f))) %>% rev() %>% col2rgb()
+coll <- (col1*0.3+col2*0.7)/255
+##coll[,] <- as.integer(coll[,])
+colz <- rgb(red=coll["red",],green=coll["green",],blue=coll["blue",],maxColorValue = 1)
+
+##YlOrRd
+gg <- gg+scale_color_manual(name="Probability",values=colz)
+gg
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Conclusions
+
+Finally, a vignette about a proper use of **lmomIDF** with hourly precipitation time series package has been shown. The user can make his/her own quantitative assessments of the results and draw on the chunks of code reported to tailor what the package can offer to his/her own needs.
+
+
+
+## Further Readings on Similar Topic
+
+Similar reading on which outcomes can be compared: 
+
+- https://www.gis-blog.com/eva-intro-2/ ;
+
+- https://climatedata.ca/resource/idf-curves-101/ ;
+
+- https://en.wikipedia.org/wiki/Intensity-duration-frequency_curve ;
+
+- https://www.engr.colostate.edu/~ramirez/ce_old/classes/cive322-Ramirez/IDF-Procedure.pdf ;
+
+- https://www.mitma.gob.es/recursos_mfom/0610300.pdf (in Spanish);
+
+- http://www.comune.laspezia.it/export/sites/SPEZIAnet/Aree_tematiche/Ambiente/Energia/Piano-dazione-locale-di-adattamento.pdf or https://interreg-maritime.eu/documents/374720/6676234/ADAPT_piano_locale_PP08_IT.pdf/40e2289f-ab37-4187-8c73-cf3eab8737dc?t=1581354178721 (from https://interreg-maritime.eu/web/adapt/-/piani-locali-di-adattamento , in Italian).
+
+The list and URLs and/or references will be further updated.
+
+
+
+
+
+
+
+
+
+
+## References 
+
+
+```{r generateBibliography,echo=FALSE,eval=TRUE,message=FALSE,warning=FALSE,print=FALSE,results="hide"}
+
+require(knitcitations)
+cleanbib()
+options(citation_format="pandoc")
+read.bibtex(file = "bibliography.bib")
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ## START VIGNETTE TEMPLATE -->
+
+<!-- Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format: -->
+
+<!-- - Never uses retina figures -->
+<!-- - Has a smaller default figure size -->
+<!-- - Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style -->
+
+<!-- ## Vignette Info -->
+
+<!-- Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette. -->
+
+<!-- ## Styles -->
+
+<!-- The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows: -->
+
+<!--     output:  -->
+<!--       rmarkdown::html_vignette: -->
+<!--         css: mystyles.css -->
+
+<!-- ## Figures -->
+
+<!-- The figure sizes have been customised so that you can easily put two images side-by-side.  -->
+
+<!-- ```{r, fig.show='hold'} -->
+<!-- plot(1:10) -->
+<!-- plot(10:1) -->
+<!-- ``` -->
+
+<!-- You can enable figure captions by `fig_caption: yes` in YAML: -->
+
+<!--     output: -->
+<!--       rmarkdown::html_vignette: -->
+<!--         fig_caption: yes -->
+
+<!-- Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**. -->
+
+<!-- ## More Examples -->
+
+<!-- You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`. -->
+
+<!-- ```{r, echo=FALSE, results='asis'} -->
+<!-- knitr::kable(head(mtcars, 10)) -->
+<!-- ``` -->
+
+<!-- Also a quote using `>`: -->
+
+<!-- > "He who gives up [code] safety for [code] speed deserves neither." -->
+<!-- ([via](https://twitter.com/hadleywickham/status/504368538874703872)) -->

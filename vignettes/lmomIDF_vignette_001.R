@@ -52,7 +52,7 @@ time <- prec$YEARMODA
 precz <- prec$PRCP %>% as.zoo()
 index(precz) <- time
 main="DAILY PRECIPITATION Vs TIME"
-ylab="precipitation [mm/hr]"
+ylab="precipitation [mm/day]"
 xlab="time"
 
 dd <- dygraph(precz,main=main,ylab=ylab,xlab=xlab) %>% dyRangeSelector()
