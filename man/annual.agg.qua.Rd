@@ -41,13 +41,13 @@ yearly.agg.qua(...)
 
 \item{nrun}{additional Monte-Carlo generations. It is used if \code{use_ggplot==TRUE}.}
 
-\item{n_idf}{exponemts (e.g. generally mamed \code{n}) of Intansity Diration Curve}
+\item{n_idf}{exponents (e.g. generally named \code{n}) of Intensity Duration Curve}
 
 \item{remove_distrib_from_boxplot}{logical. It is used if \code{use_ggplot==TRUE}.  Default see usage. If it \code{TRUE} distribution quantiles are removed from box plots.}
 
-\item{idf_curve}{logical. It is used if \code{use_ggplot==TRUE}.  Default see usage. If it \code{TRUE}. IDF (intensity-durantion-frequancy) and DDF (depth-durantion-frequancy) curves are added to the respective boxplots}
+\item{idf_curve}{logical. It is used if \code{use_ggplot==TRUE}.  Default see usage. If it \code{TRUE}. IDF (intensity-duration-frequancy) and DDF (depth-duration-frequency) curves are added to the respective boxplots.}
 
-\item{possible_return_null}{logical. Defalt is \code{FALSE} , otherwise it retrns \code{NULL} with no errors if \code{f} or \code{para} are \code{NULL} or zero-length.}
+\item{possible_return_null}{logical. Default is \code{FALSE} , otherwise it returns \code{NULL} with no errors if \code{f} or \code{para} are \code{NULL} or zero-length.}
 
 \item{...}{further arguments.}
 }

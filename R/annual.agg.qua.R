@@ -9,10 +9,10 @@ NULL
 #' @param use_ggplot logical. if it is \code{TRUE} (default) boxplots are created. See function result descriptions. 
 #' @param xlab,ylab,fill,color_idf arguments for \code{ggplot2} functions. It is used if \code{use_ggplot==TRUE}. See \code{\link{geom_boxplot}},\code{\link{scale_fill_manual}},\code{\link{labs}}
 #' @param nrun additional Monte-Carlo generations. It is used if \code{use_ggplot==TRUE}. 
-#' @param n_idf exponemts (e.g. generally mamed \code{n}) of Intansity Diration Curve 
+#' @param n_idf exponents (e.g. generally named \code{n}) of Intensity Duration Curve 
 #' @param remove_distrib_from_boxplot logical. It is used if \code{use_ggplot==TRUE}.  Default see usage. If it \code{TRUE} distribution quantiles are removed from box plots.  
-#' @param idf_curve logical. It is used if \code{use_ggplot==TRUE}.  Default see usage. If it \code{TRUE}. IDF (intensity-durantion-frequancy) and DDF (depth-durantion-frequancy) curves are added to the respective boxplots 
-#' @param possible_return_null logical. Defalt is \code{FALSE} , otherwise it retrns \code{NULL} with no errors if \code{f} or \code{para} are \code{NULL} or zero-length.
+#' @param idf_curve logical. It is used if \code{use_ggplot==TRUE}.  Default see usage. If it \code{TRUE}. IDF (intensity-duration-frequancy) and DDF (depth-duration-frequency) curves are added to the respective boxplots. 
+#' @param possible_return_null logical. Default is \code{FALSE} , otherwise it returns \code{NULL} with no errors if \code{f} or \code{para} are \code{NULL} or zero-length.
 #' @param ... further arguments. 
 #'
 #'
