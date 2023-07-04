@@ -29,11 +29,11 @@ r <- rast(xmin=xmin, xmax=xmax,
 
 r[] <- 0
 mapview::mapview(raster::raster(r),alpha=0.2)
-
+## view with leaflet:: see ..
 
 years <- 1982:2021
 chirps_filenames <- "/home/ecor/local/data/climate/jrc/lmomIDF_example_ext_data/chirps_test_area/chirps_%d.grd" %>% sprintf(years)
-cond0 <- FALSE ## current set to be FALSE please set TRUE to trigger possible CHIRPS data download
+cond0 <- FALSE ## current set to be FALSE please set TRUE not to trigger possible CHIRPS data download
 
 for (year in years) {
 

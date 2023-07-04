@@ -38,6 +38,7 @@ NULL
 annual.agg.cdf <- function(x,para,f.name="f",aggr.name=NA,dd.name=NA,is_depth=FALSE,dd_formatter=NA,...)
 {
   
+ 
   if (is.null(aggr.name)) aggr.name <- NA
   if (is.null(dd.name)) dd.name <- NA
  ## if (is.null(dd_formatter)) dd_formatter <- NA
@@ -48,8 +49,9 @@ annual.agg.cdf <- function(x,para,f.name="f",aggr.name=NA,dd.name=NA,is_depth=FA
   if (is.null(dd_formatter)) dd_formatter <- attr(para,"dd_formatter")
  # dd <- attr(para,"lmom")[,dd.name]
   #names(dd) <- sprintf(dd_formatter,dd)
-  
-  
+  #str(x)
+  if (x[1]=="sample") x <- attr(para,"x")[,aggr.name] ## EC 20230531 20230626
+
   out <- para %>% lapply(FUN=function(zz,xx,is_ddepth,ddd.name,...){
         ddd <- as.numeric(attr(zz,ddd.name))
         if (is_ddepth) xx <- xx/ddd    

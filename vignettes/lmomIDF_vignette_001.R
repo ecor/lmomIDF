@@ -7,6 +7,7 @@ knitr::opts_chunk$set(
 )
 ###knitr::opts_chunk$set(echo = TRUE)
 
+
 ## ----gsod---------------------------------------------------------------------
 
 library(GSODR)

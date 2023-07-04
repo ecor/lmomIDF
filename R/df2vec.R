@@ -26,10 +26,11 @@ df2vec <- function(x,aggr.name="aggr",index.name="index",dd.name="dd",dd_formatt
   
   if (is.null(x)) return(NULL)
   x <- as.data.frame(x)
-  
-  if (is.numeric(x[,dd.name])) x[,dd.name] <- sprintf(dd_formatter,x[,dd.name])
-  out <- x[,aggr.name]
-  names(out) <- paste(x[,dd.name],x[,index.name],sep="_")
+  xdd <- as.numeric(x[,dd.name])
+  xdd <- sprintf(dd_formatter,xdd)
+  ##if (is.numeric(x[,dd.name])) x[,dd.name] <- sprintf(dd_formatter,x[,dd.name])
+  out <- as.numeric(x[,aggr.name])
+  names(out) <- paste(xdd,x[,index.name],sep="_")
   return(out)
 }
 

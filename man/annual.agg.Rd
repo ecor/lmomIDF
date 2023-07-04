@@ -8,21 +8,24 @@
 annual.agg(
   x,
   time,
-  index = as.character(time, format = format),
+  index = as.character(lubridate::year(time)),
   dd = c(1, 2, 5),
   aggr.fun = "max",
   na.rm = TRUE,
-  format = "\%Y",
   dd_formatter = "D\%03d",
   numeric_dd = TRUE,
   numeric_index = FALSE,
   aggr.name = "aggr",
   dd.name = "dd",
   index.name = "index",
-  filter = lapply(dd, function(dd) {     rep(1, dd)/dd }),
+  filter = lapply(dd, function(dd) {
+     rep(1, dd)/dd
+ }),
   method = "convolution",
   sides = 1,
   return_vector = FALSE,
+  order_time = TRUE,
+  speed_up = FALSE,
   ...
 )
 
@@ -41,8 +44,6 @@ yearly.agg(x, time, ...)
 
 \item{na.rm}{argument for \code{aggr.fun}}
 
-\item{format}{argument for \code{\link{as.character}} used to create \code{index} from \code{time}.}
-
 \item{dd_formatter}{string formatter for duration in the function value}
 
 \item{numeric_dd}{logical. Default is \code{TRUE}.}
@@ -54,6 +55,10 @@ yearly.agg(x, time, ...)
 \item{filter, method, sides, ...}{further arguments for \code{stats::\link[stats]{filter}}}
 
 \item{return_vector}{logical. If \code{TRUE} function return a vector through \code{\link{df2vec}}. Default is \code{FALSE}.}
+
+\item{order_time}{logical argument, if it \code{TRUE} \code{x} is ordered following increasing \code{data}}
+
+\item{speed_up}{logical argument}
 }
 \value{
 a data frame or similar with index (e,g. year or year-month), duration (column name: \code{"dd"})  
@@ -83,6 +88,7 @@ library(lmom)
 library(dplyr)
 outp <- out \%>\% filter(dd==2)
 evplot(outp$aggr)
+
 
 
 }

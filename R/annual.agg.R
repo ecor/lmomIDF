@@ -11,9 +11,11 @@ NULL
 #' @param dd_formatter string formatter for duration in the function value
 #' @param numeric_dd logical. Default is \code{TRUE}.
 #' @param numeric_index logical. Default is \code{FALSE}.
-#' @param format argument for \code{\link{as.character}} used to create \code{index} from \code{time}.
+
 #' @param aggr.name,dd.name,index.name optional column names of function results. See function usage.
 #' @param return_vector logical. If \code{TRUE} function return a vector through \code{\link{df2vec}}. Default is \code{FALSE}.
+#' @param order_time logical argument, if it \code{TRUE} \code{x} is ordered following increasing \code{data} 
+#' @param speed_up logical argument 
 #' @param filter,method,sides,... further arguments for \code{stats::\link[stats]{filter}}
 #'
 #' @seealso \code{stats::\link[stats]{filter}},\code{\link{max}},\code{\link{min}}
@@ -26,6 +28,7 @@ NULL
 #' @importFrom stringr str_replace_all
 #' @importFrom reshape2 melt
 #' @importFrom dplyr .data group_by summarize ungroup
+#' @importFrom lubridate year
 #' @examples 
 #' 
 #' library(RMAWGEN)
@@ -49,9 +52,15 @@ NULL
 #' evplot(outp$aggr)
 #' 
 #' 
+#' 
 
-annual.agg <- function(x,time,index=as.character(time,format=format),dd=c(1,2,5),aggr.fun="max",na.rm=TRUE,
-                       format="%Y",dd_formatter="D%03d",numeric_dd=TRUE,numeric_index=FALSE,aggr.name="aggr",dd.name="dd",index.name="index",filter=lapply(dd,function(dd){rep(1,dd)/dd}),method="convolution",sides=1,return_vector=FALSE,...) {
+
+
+# @param format argument for \code{\link{as.character}} used to create \code{index} from \code{time}. DEPREC
+#format="%Y"
+
+annual.agg <- function(x,time,index=as.character(lubridate::year(time)),dd=c(1,2,5),aggr.fun="max",na.rm=TRUE,
+                       dd_formatter="D%03d",numeric_dd=TRUE,numeric_index=FALSE,aggr.name="aggr",dd.name="dd",index.name="index",filter=lapply(dd,function(dd){rep(1,dd)/dd}),method="convolution",sides=1,return_vector=FALSE,order_time=TRUE,speed_up=FALSE,...) {
   
   cond1 <- all(diff(time)==diff(time)[1])
   if (!cond1) {
@@ -61,15 +70,23 @@ annual.agg <- function(x,time,index=as.character(time,format=format),dd=c(1,2,5)
   out <- NULL
   ##
   time <- sort(time)
-  x <- x[order(time)]
+  if (order_time) x <- x[order(time)]
   index <- index[order(time)]
   
   ##
   if (!is.list(filter)) filter <- list(filter)
   if (length(dd)==length(filter)) names(filter) <- sprintf(dd_formatter,dd)
   out <- lapply(FUN=stats::filter,x=x,filter,method=method,sides=sides,...) 
-  out <- lapply(out,FUN=as.numeric)
+  out <- lapply(out,FUN=as.numeric) 
+  if (speed_up) {
+    out <- out %>% lapply(FUN=tapply,get(aggr.fun),INDEX=index) 
+    out <- unlist(out)
+    names(out) <- str_replace_all(names(out),"[.]","_")
+    return(out)
+  }  
   out <- as.data.frame(out)
+  
+  
   out$time <- time
   out$index <- index ## as.character(out$time,format=format)
   out <- reshape2::melt(out,id=c("time","index"))
@@ -80,6 +97,7 @@ annual.agg <- function(x,time,index=as.character(time,format=format),dd=c(1,2,5)
   ######
   if (is.character(aggr.fun)) aggr.fun <- get(aggr.fun)
   #out <- 
+  #####
   ######
   out <- out %>% group_by(.data$dd,.data$index) %>% summarize(aggr=aggr.fun(.data$value,na.rm=na.rm)) %>% ungroup()
   if (numeric_dd) out$dd <- as.character(out$dd) %>% str_replace_all("[A-Z]","") %>% str_replace_all("[a-z]","") %>% as.numeric()
