@@ -22,7 +22,6 @@ NULL
 #' @importFrom stringr str_detect
 #' @importFrom boot boot boot.ci 
 #'
-#'
 #' @export
 #' @examples 
 #' 
@@ -143,7 +142,8 @@ annual.agg.conf.interval  <- function(x="sample",para,f.name="f",aggr.name=NA,dd
  
   #BOOTSTRAP HERE
   boot.ci.type <- boot.ci.type[1]
-  boot.ci_ <- lapply(FUN=boot.ci,boot.out=boot_,type=boot.ci.type,conf=conf,X=index(boot_$t0))
+  ####oo <<- boot_
+  boot.ci_ <- lapply(FUN=boot.ci,boot.out=boot_,type=boot.ci.type,conf=conf,X=1:length(boot_$t0))  ##index(boot_$t0))
   ####
   boot.ci.2_ <- lapply(X=boot.ci_,FUN=function(x,type=boot.ci.type) {(x[str_detect(names(x),type)][[1]] %>% rev())[c(2,1)]}) %>% do.call(what="rbind") %>% as.data.frame()
   names(boot.ci.2_) <- paste(aggr.name,c("low","high"),sep="_")

@@ -20,7 +20,7 @@ NULL
 #'
 #' @seealso \code{stats::\link[stats]{filter}},\code{\link{max}},\code{\link{min}}
 #' 
-#' @return a data frame or similar with index (e,g. year or year-month), duration (column name: \code{"dd"})  
+#' @return a data frame or similar with index (e.g. year or year-month), duration (column name: \code{"dd"})  
 #' and the aggregated value  (column name: \code{"aggr"})
 #' @export
 #' 

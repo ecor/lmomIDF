@@ -61,7 +61,7 @@ yearly.agg(x, time, ...)
 \item{speed_up}{logical argument}
 }
 \value{
-a data frame or similar with index (e,g. year or year-month), duration (column name: \code{"dd"})  
+a data frame or similar with index (e.g. year or year-month), duration (column name: \code{"dd"})  
 and the aggregated value  (column name: \code{"aggr"})
 }
 \description{

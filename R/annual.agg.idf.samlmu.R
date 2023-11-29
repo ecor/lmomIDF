@@ -160,6 +160,14 @@ annual.agg.idf.samlmu <- function(x,lmom=NULL,aggr.name="aggr",dd.name="dd",nn_m
     p_ddf <- as.numeric(summary(fitd)$coef["log_dd",4])
   }
   
+  ####
+  n_idf[n_idf<(-1) ] <- (-1) ##EC 20231128 
+  n_ddf[n_ddf<0] <- 0 ##EC 20231128 
+  
+  
+  
+  ####
+  
   if (use_ggplot & !condna) {
   gg <- ggplot(fit$model, aes_string(x = "log_dd", y = "log_lm",group="lm_order"))+
     geom_point()+stat_smooth(method = "glm", col = col) +
