@@ -9,6 +9,7 @@ annual.agg.qua(
   f = (0:10)/10,
   para,
   f.name = "f",
+  rt.name = "rt",
   aggr.name = NA,
   dd.name = NA,
   use_ggplot = TRUE,
@@ -20,6 +21,7 @@ annual.agg.qua(
   n_idf = NULL,
   remove_distrib_from_boxplot = FALSE,
   idf_curve = TRUE,
+  idf_curve_rt = idf_curve,
   possible_return_null = FALSE,
   ...
 )
@@ -31,7 +33,7 @@ yearly.agg.qua(...)
 
 \item{para}{object returned by \code{\link{annual.agg.pel}}.}
 
-\item{f.name}{column name for the probabilities/frequancies. Deafault is \code{"f"}.}
+\item{f.name, rt.name}{column names for the probabilities/frequencies and corresponding return periods. Default are \code{"f"} and \code{"rt"} respectively.}
 
 \item{aggr.name, dd.name}{column names. see \code{\link{annual.agg.samlmu}} or \code{\link{annual.agg.pel}}.}
 
@@ -45,7 +47,7 @@ yearly.agg.qua(...)
 
 \item{remove_distrib_from_boxplot}{logical. It is used if \code{use_ggplot==TRUE}.  Default see usage. If it \code{TRUE} distribution quantiles are removed from box plots.}
 
-\item{idf_curve}{logical. It is used if \code{use_ggplot==TRUE}.  Default see usage. If it \code{TRUE}. IDF (intensity-duration-frequancy) and DDF (depth-duration-frequency) curves are added to the respective boxplots.}
+\item{idf_curve, idf_curve_rt}{logical. It is used if \code{use_ggplot==TRUE}.  Default see usage. If one of them is  \code{TRUE}. IDF (intensity-duration-frequancy) and DDF (depth-duration-frequency) curves are added to the respective boxplots.}
 
 \item{possible_return_null}{logical. Default is \code{FALSE} , otherwise it returns \code{NULL} with no errors if \code{f} or \code{para} are \code{NULL} or zero-length.}
 

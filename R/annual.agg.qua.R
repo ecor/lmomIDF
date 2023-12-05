@@ -5,13 +5,13 @@ NULL
 #' @param f vector of probabilities/frequencies.
 #' @param para object returned by \code{\link{annual.agg.pel}}.
 #' @param aggr.name,dd.name column names. see \code{\link{annual.agg.samlmu}} or \code{\link{annual.agg.pel}}.
-#' @param f.name column name for the probabilities/frequancies. Deafault is \code{"f"}.
+#' @param f.name,rt.name  column names for the probabilities/frequencies and corresponding return periods. Default are \code{"f"} and \code{"rt"} respectively.
 #' @param use_ggplot logical. if it is \code{TRUE} (default) boxplots are created. See function result descriptions. 
 #' @param xlab,ylab,fill,color_idf arguments for \code{ggplot2} functions. It is used if \code{use_ggplot==TRUE}. See \code{\link{geom_boxplot}},\code{\link{scale_fill_manual}},\code{\link{labs}}
 #' @param nrun additional Monte-Carlo generations. It is used if \code{use_ggplot==TRUE}. 
 #' @param n_idf exponents (e.g. generally named \code{n}) of Intensity Duration Curve 
 #' @param remove_distrib_from_boxplot logical. It is used if \code{use_ggplot==TRUE}.  Default see usage. If it \code{TRUE} distribution quantiles are removed from box plots.  
-#' @param idf_curve logical. It is used if \code{use_ggplot==TRUE}.  Default see usage. If it \code{TRUE}. IDF (intensity-duration-frequancy) and DDF (depth-duration-frequency) curves are added to the respective boxplots. 
+#' @param idf_curve,idf_curve_rt logical. It is used if \code{use_ggplot==TRUE}.  Default see usage. If one of them is  \code{TRUE}. IDF (intensity-duration-frequancy) and DDF (depth-duration-frequency) curves are added to the respective boxplots. 
 #' @param possible_return_null logical. Default is \code{FALSE} , otherwise it returns \code{NULL} with no errors if \code{f} or \code{para} are \code{NULL} or zero-length.
 #' @param ... further arguments. 
 #'
@@ -68,7 +68,7 @@ NULL
 #' out <- annual.agg.qua(f=c(1:49)/50,para=z)
 #' }
 
-annual.agg.qua <- function(f=(0:10)/10,para,f.name="f",aggr.name=NA,dd.name=NA,use_ggplot=TRUE,xlab="duration",ylab="value",fill=c("#ca0020","#0571b0","#bababa","#bababb","#bababc"),color_idf=brewer.pal(name="YlOrRd",n=length(f)), nrun=5,n_idf=NULL,remove_distrib_from_boxplot=FALSE,idf_curve=TRUE,possible_return_null=FALSE,...)
+annual.agg.qua <- function(f=(0:10)/10,para,f.name="f",rt.name="rt",aggr.name=NA,dd.name=NA,use_ggplot=TRUE,xlab="duration",ylab="value",fill=c("#ca0020","#0571b0","#bababa","#bababb","#bababc"),color_idf=brewer.pal(name="YlOrRd",n=length(f)), nrun=5,n_idf=NULL,remove_distrib_from_boxplot=FALSE,idf_curve=TRUE,idf_curve_rt=idf_curve,possible_return_null=FALSE,...)
   
 {
   
@@ -107,7 +107,7 @@ annual.agg.qua <- function(f=(0:10)/10,para,f.name="f",aggr.name=NA,dd.name=NA,u
   out[,dd.name] <- dd[out$L1]
   out <- out[c("f",dd.name,"value")]
   names(out) <- c(f.name,dd.name,aggr.name)
-  
+  out[,rt.name] <- round(1/(1-out[,f.name])) ## added EC 20231204
   
  ## out
   if (use_ggplot) {
@@ -161,9 +161,17 @@ annual.agg.qua <- function(f=(0:10)/10,para,f.name="f",aggr.name=NA,dd.name=NA,u
     fill <- fill[1:ngroups]
     gg <- ggplot()+geom_boxplot(aes(x=(dd1),y=aggr1,group=dd1,fill=group1),data=NULL)+theme_bw()
     gg <- gg+xlab(xlab)+ylab(ylab)+scale_fill_manual(values=fill,name="samples")
+    
+    f2.name <- f.name
+    if (idf_curve_rt) {
+      
+      idf_curve <- idf_curve_rt
+      f2.name <- rt.name
+    }
     if (idf_curve) {
-      gg <- gg+geom_line(aes(x=out[,dd.name],y=out[,aggr.name],group=factor(out[,f.name]),col=factor(out[,f.name])))
-      gg <- gg+scale_color_manual(values=color_idf,name="frequency")
+      ##"frequency"
+      gg <- gg+geom_line(aes(x=out[,dd.name],y=out[,aggr.name],group=factor(out[,f2.name]),col=factor(out[,f2.name])))
+      gg <- gg+scale_color_manual(values=color_idf,name=f2.name)
       
     }
     ###
@@ -173,8 +181,8 @@ annual.agg.qua <- function(f=(0:10)/10,para,f.name="f",aggr.name=NA,dd.name=NA,u
     gg_depth <- ggplot()+geom_boxplot(aes(x=dd1,group=dd1,y=aggr1_depth,fill=group1),data=NULL)+theme_bw()
     gg_depth <- gg_depth+ylab(paste(ylab,"(depth)"))+xlab(xlab)+scale_fill_manual(values=fill,name="samples")
     if (idf_curve) {
-      gg_depth <- gg_depth+geom_line(aes(x=out[,dd.name],y=out[,aggr.name]*out[,dd.name],group=factor(out[,f.name]),col=factor(out[,f.name])))
-      gg_depth <- gg_depth+scale_color_manual(values=color_idf,name="frequency")
+      gg_depth <- gg_depth+geom_line(aes(x=out[,dd.name],y=out[,aggr.name]*out[,dd.name],group=factor(out[,f2.name]),col=factor(out[,f2.name])))
+      gg_depth <- gg_depth+scale_color_manual(values=color_idf,name=f2.name)
       
     }
     
@@ -187,15 +195,15 @@ annual.agg.qua <- function(f=(0:10)/10,para,f.name="f",aggr.name=NA,dd.name=NA,u
     gg_idf <- ggplot()+geom_boxplot(aes(x=(dd1[i_idf]),group=(dd1[i_idf]),y=aggr1[i_idf],fill=group1[i_idf]),data=NULL)
     gg_idf <- gg_idf+theme_bw()+xlab(xlab)+ylab(ylab)+scale_fill_manual(values=fill,name="samples")
    
-    gg_idf <- gg_idf+geom_line(aes(x=out[,dd.name],y=out[,aggr.name],group=factor(out[,f.name]),col=factor(out[,f.name])))
-    gg_idf <- gg_idf+scale_color_manual(values=color_idf,name="frequency")
+    gg_idf <- gg_idf+geom_line(aes(x=out[,dd.name],y=out[,aggr.name],group=factor(out[,f2.name]),col=factor(out[,f2.name])))
+    gg_idf <- gg_idf+scale_color_manual(values=color_idf,name=f2.name)
   
     attr(out,"idf") <- gg_idf
     
     gg_ddf <- ggplot()+geom_boxplot(aes(x=(dd1[i_idf]),group=dd1[i_idf],y=aggr1[i_idf]*dd1[i_idf],fill=group1[i_idf]),data=NULL)+theme_bw()
     gg_ddf <- gg_ddf+ylab(paste(ylab,"(depth)"))+xlab(xlab)+scale_fill_manual(values=fill,name="samples") 
-    gg_ddf <- gg_ddf+geom_line(aes(x=out[,dd.name],y=out[,aggr.name]*out[,dd.name],group=factor(out[,f.name]),col=factor(out[,f.name])))
-    gg_ddf <- gg_ddf+scale_color_manual(values=color_idf,name="frequency")
+    gg_ddf <- gg_ddf+geom_line(aes(x=out[,dd.name],y=out[,aggr.name]*out[,dd.name],group=factor(out[,f2.name]),col=factor(out[,f2.name])))
+    gg_ddf <- gg_ddf+scale_color_manual(values=color_idf,name=f2.name)
     attr(out,"ddf") <- gg_ddf
     
     

@@ -57,6 +57,6 @@ z <- annual.agg.pel(distrib="gpa",x=y,lmom=lmom)
 ff <- annual.agg.qua(f=c(0.5,0.9),para=z)
 out <- annual.agg.cdf(x=ff$aggr,para=z)
 
-out[out$f \%in\% ff$f,names(ff)]
+out[out$f \%in\% ff$f,]
 ff
 }

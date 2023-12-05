@@ -335,7 +335,7 @@ qua_both <- full_join(qua_1981_2010,qua_1991_2020)
 library(ggplot2)
 library(RColorBrewer)
 
-gg <- ggplot()+geom_point(data=qua_both,aes(x=a_1981_2010,y=a_1991_2020,color=factor(f)))
+gg <- ggplot()+geom_point(data=qua_both,aes(x=a_1981_2010,y=a_1991_2020,color=factor(rt)))
 gg <- gg+xlab("Quantiles 1981-2010")+ylab("Quantiles 1991-2020")+theme_bw()+geom_abline()
 ###
 col1 <- brewer.pal(name="YlGnBu",n=length(unique(qua_both$f))) %>% col2rgb()
@@ -345,7 +345,7 @@ coll <- (col1*0.3+col2*0.7)/255
 colz <- rgb(red=coll["red",],green=coll["green",],blue=coll["blue",],maxColorValue = 1)
 
 ##YlOrRd
-gg <- gg+scale_color_manual(name="Probability",values=colz)
+gg <- gg+scale_color_manual(name="rt",values=colz)
 gg
 ```
 
