@@ -47,6 +47,10 @@ Recently, @Heidari2020 extend also the concepts of IDF curves to droughts. This 
 
 
 
+
+
+
+
 ## An application with GSOD dataset
 
 Here is an application of use of the package with GSOD precipitation data through *GSODR* package (@Sparks2017) to get (and work with) daily precipitation time series recorded in Alexandria International Airport, Egypt. 

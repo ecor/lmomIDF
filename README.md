@@ -1,7 +1,6 @@
 # lmomIDF
 
-An R package for creating (Precipitation) Intensity-Duration-Frequency Analysis and Variability with
-L-Moments from 'lmom', 
+An R package for getting SoilGrids global maps at 250m resolution. See vignette and/or documentation for further details.
 
 See vignettes and manual for further details.
 

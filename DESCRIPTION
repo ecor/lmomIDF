@@ -3,7 +3,7 @@ License: GPL (>= 3)
 Title: (Precipitation) Intensity-Duration-Frequency Analysis and Variability with
         L-Moments from 'lmom'
 Type: Package
-Authors@R: c(person(given="Emanuele",family="Cordano",role = c("aut","cre"),email = "emanuele.cordano@gmail.com"))
+Authors@R: c(person(given="Emanuele",family="Cordano",role = c("aut","cre"),email = "emanuele.cordano@gmail.com",comment = c(ORCID=  "0000-0002-3508-5898")))
 Description: Intensity-Duration-Frequancy Analysis of the extreme preceipitation/rainfall events using the methods of L-Moments.
 Version: 0.0.3.7
 Date: 2023-12-06
@@ -12,5 +12,5 @@ Depends: R(>= 3.5.0),lmomPi,lubridate
 Imports: dplyr,magrittr,reshape2,lmom,stringr,ggplot2,RColorBrewer,boot
 Suggests: rasterList,lmomRFA,RMAWGEN,GSODR,data.table,knitr,knitcitations,dygraphs,zoo,rmarkdown,mapview,raster,terra,chirps,leaflet,sf,tidyterra,lmomco
 VignetteBuilder: knitr
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2
 NeedsCompilation: no

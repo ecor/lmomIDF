@@ -1,0 +1,16 @@
+
+citHeader("To cite lmomIDF in publications, please use the following article and the respective package reference:")
+
+
+citEntry(entry ="manual",
+    title = "lmomIDF: (Precipitation) Intensity-Duration-Frequency Analysis and Variability with
+L-Moments from 'lmom'",
+    author = "Emanuele Cordano",
+    year = "2024",
+    note = "R package",
+    url = "https://github.com/ecor/lmomIDF",
+    textVersion="Emanuele Cordano (2024). lmomIDF: (Precipitation) Intensity-Duration-Frequency Analysis and Variability with
+L-Moments from 'lmom'. R package, https://github.com/ecor/lmomIDF",
+    doi="TO_DO"
+  )
+
