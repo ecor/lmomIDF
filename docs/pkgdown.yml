@@ -1,0 +1,9 @@
+pandoc: 3.1.1
+pkgdown: 2.1.0
+pkgdown_sha: ~
+articles:
+  lmomIDF_vignette_001: lmomIDF_vignette_001.html
+  lmomIDF_vignette_003: lmomIDF_vignette_003.html
+  lmomIDF_vignette_004: lmomIDF_vignette_004.html
+  lmomIDF_vignette_007: lmomIDF_vignette_007.html
+last_built: 2024-08-08T07:44Z
