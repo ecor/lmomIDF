@@ -51,9 +51,19 @@ NULL
 #' outp <- out %>% filter(dd==2)
 #' evplot(outp$aggr)
 #' 
-#' 
-#' 
 
+#' 
+#' 
+#' outm <- annual.agg(x,time,index=sprintf("%04d_%02d",lubridate::year(time),lubridate::month(time)))
+#' outmd <- annual.agg(x,time,index=sprintf("%04d_%02d",lubridate::year(time),lubridate::month(time)),aggr.fun=function(l,...) {which.max(l)})
+#'
+#' ### intesity greater or equal to 10 mm per day. 
+#' funthres <- function(r,valmin=10,...) {length(which(r>=valmin))}
+#' out_funthres <- annual.agg(x,time,index=sprintf("%04d_%02d",lubridate::year(time),lubridate::month(time)),aggr.fun=funthres)
+#' 
+#' 
+#'
+#'
 
 
 # @param format argument for \code{\link{as.character}} used to create \code{index} from \code{time}. DEPREC

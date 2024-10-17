@@ -154,7 +154,7 @@ gg
 library(leaflet)
 out1aggr  <- out0aggr
 out1aggr[out1aggr>400] <- NA
-plet(out1aggr,1:nlyr(out0aggr), tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap")[2], collapse=FALSE,shared=TRUE,legend="bottomleft") %>% addScaleBar() #%>% lines(v, lwd=2, col="blue")  #%>% lines(v, lwd=2, col="blue") 
+plet(project(out1aggr,y="epsg:3857",method="near"),1:nlyr(out0aggr), tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap")[2], collapse=FALSE,shared=TRUE,legend="bottomleft") %>% addScaleBar() #%>% lines(v, lwd=2, col="blue")  #%>% lines(v, lwd=2, col="blue") 
 
 
 ## ----ann.max.samlum.1981.2010,fig.width=7, paged.print=FALSE,eval=TRUE--------
@@ -341,7 +341,7 @@ ff2 <- function(x,colors=colz,values=gev1_qua[],probs=(0:10)/100,...) {
 
 
 
-plet(gev1_qua,1:nlyr(gev1_qua), tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap")[2], collapse=FALSE,shared=TRUE,legend="bottomleft") ##,col=ff2) %>% addScaleBar() #%>% lines(v, lwd=2, col="blue") 
+plet(project(gev1_qua,y="epsg:3857",method="near"),1:nlyr(gev1_qua), tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap")[2], collapse=FALSE,shared=TRUE,legend="bottomleft") ##,col=ff2) %>% addScaleBar() #%>% lines(v, lwd=2, col="blue") 
 
 
 
