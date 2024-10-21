@@ -34,10 +34,11 @@ vec2df <- function(x,nn=names(x),aggr.name="aggr",index.name="index",dd.name="dd
   
   if (is.null(x)) return(NULL)
   if (length(x)!=length(nn)) stop("Mismatch between x and nn lengths")
-  out <- data.frame(aggr=as.numeric(x))
+  ##out <- data.frame(aggr=as.numeric(x))
+  out <- data.frame(aggr=x) ## EC 20241019
   out$dd <- str_split(nn,"_") %>% sapply(FUN=function(x){x[1]})  
   if (numeric_dd) out$dd <- out$dd %>% str_replace_all("[A-Z]","") %>% str_replace_all("[a-z]","") %>%     as.numeric()
-  out$index <- str_split(nn,"_") %>% sapply(FUN=function(x){x[2]})  
+  out$index <- str_split(nn,"_") %>% sapply(FUN=function(x){paste(x[-1],collapse="_")}) ## EC20241019sapply(FUN=function(x){x[2]})  
   if (numeric_index) out$index <- out$dd %>% str_replace_all("[A-Z]","") %>% str_replace_all("[a-z]","") %>%     as.numeric()
 
   names(out)[names(out)=="aggr"] <- aggr.name

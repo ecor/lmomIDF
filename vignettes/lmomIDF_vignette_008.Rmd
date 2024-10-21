@@ -4,7 +4,7 @@ author: "Emanuele Cordano"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{title}
+  %\VignetteIndexEntry{Estimation of Intensity-Duration-Frequency (IDF) Curve through L-Moment method}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 bibliography: bibliography.bib

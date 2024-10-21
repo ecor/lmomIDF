@@ -29,7 +29,9 @@ df2vec <- function(x,aggr.name="aggr",index.name="index",dd.name="dd",dd_formatt
   xdd <- as.numeric(x[,dd.name])
   xdd <- sprintf(dd_formatter,xdd)
   ##if (is.numeric(x[,dd.name])) x[,dd.name] <- sprintf(dd_formatter,x[,dd.name])
-  out <- as.numeric(x[,aggr.name])
+  
+  #out <- as.numeric(x[,aggr.name])
+  out <- x[,aggr.name] ## 20241019
   names(out) <- paste(xdd,x[,index.name],sep="_")
   return(out)
 }

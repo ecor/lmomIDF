@@ -3,7 +3,8 @@
 \name{annual.agg}
 \alias{annual.agg}
 \alias{yearly.agg}
-\title{Annual (maxima or minima) aggregation}
+\alias{monthly.agg}
+\title{Annual (maxima or minima) (default) aggregation}
 \usage{
 annual.agg(
   x,
@@ -30,13 +31,20 @@ annual.agg(
 )
 
 yearly.agg(x, time, ...)
+
+monthly.agg(
+  x,
+  time,
+  index = sprintf("\%04d_\%02d", lubridate::year(time), lubridate::month(time)),
+  ...
+)
 }
 \arguments{
 \item{x}{vector or time series}
 
 \item{time}{vector of time index (e.g. \code{Date} or \code{POSIXct})}
 
-\item{index}{index aggregation vector. Default is}
+\item{index}{index aggregation vector. Default is \code{as.character(lubridate::year(time))} (e.g every year)}
 
 \item{dd}{duration for the moving window. More than 1 duration can be assigned.}
 
@@ -65,7 +73,7 @@ a data frame or similar with index (e.g. year or year-month), duration (column n
 and the aggregated value  (column name: \code{"aggr"})
 }
 \description{
-Annual (maxima or minima) aggregation
+Annual (maxima or minima) (default) aggregation
 }
 \examples{
 
@@ -91,15 +99,21 @@ evplot(outp$aggr)
 
 
 
-outm <- annual.agg(x,time,index=sprintf("\%04d_\%02d",lubridate::year(time),lubridate::month(time)))
-outmd <- annual.agg(x,time,index=sprintf("\%04d_\%02d",lubridate::year(time),lubridate::month(time)),aggr.fun=function(l,...) {which.max(l)})
+outm <- annual.agg(x,time,index=sprintf("\%04d_\%02d",lubridate::year(time),
+lubridate::month(time)))
+outmd <- annual.agg(x,time,index=sprintf("\%04d_\%02d",lubridate::year(time),
+lubridate::month(time)),aggr.fun=function(l,...) {which.max(l)})
 
 ### intesity greater or equal to 10 mm per day. 
 funthres <- function(r,valmin=10,...) {length(which(r>=valmin))}
-out_funthres <- annual.agg(x,time,index=sprintf("\%04d_\%02d",lubridate::year(time),lubridate::month(time)),aggr.fun=funthres)
+out_funthres <- annual.agg(x,time,index=sprintf("\%04d_\%02d",lubridate::year(time),
+lubridate::month(time)),aggr.fun=funthres)
+outv_funthres <- annual.agg(x,time,index=sprintf("\%04d_\%02d",lubridate::year(time),
+lubridate::month(time)),aggr.fun=funthres,return_vector=TRUE)
+outv_funthres <- monthly.agg(x,time,aggr.fun=funthres,return_vector=TRUE)
+out2_funthres <- vec2df(outv_funthres)
 
-
-
+if (!identical(out_funthres,out2_funthres)) stop("Something went wrong!")
 
 }
 \seealso{

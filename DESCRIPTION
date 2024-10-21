@@ -5,8 +5,8 @@ Title: (Precipitation) Intensity-Duration-Frequency Analysis and Variability wit
 Type: Package
 Authors@R: c(person(given="Emanuele",family="Cordano",role = c("aut","cre"),email = "emanuele.cordano@gmail.com",comment = c(ORCID=  "0000-0002-3508-5898")))
 Description: Intensity-Duration-Frequancy Analysis of the extreme preceipitation/rainfall events using the methods of L-Moments.
-Version: 0.0.3.7
-Date: 2023-12-06
+Version: 0.0.3.8
+Date: 2024-10-21
 Repository: CRAN
 Depends: R(>= 3.5.0),lmomPi,lubridate
 Imports: dplyr,magrittr,reshape2,lmom,stringr,ggplot2,RColorBrewer,boot

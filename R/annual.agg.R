@@ -1,10 +1,10 @@
 NULL
-#' Annual (maxima or minima) aggregation
+#' Annual (maxima or minima) (default) aggregation
 #' 
 #' 
 #' @param x vector or time series
 #' @param time vector of time index (e.g. \code{Date} or \code{POSIXct})
-#' @param index index aggregation vector. Default is 
+#' @param index index aggregation vector. Default is \code{as.character(lubridate::year(time))} (e.g every year)
 #' @param aggr.fun atomic aggregation function (e.g. \code{\link{max}} or \code{\link{min}}), accepting \code{na.rm} argument.
 #' @param na.rm argument for \code{aggr.fun}
 #' @param dd duration for the moving window. More than 1 duration can be assigned.
@@ -54,15 +54,21 @@ NULL
 
 #' 
 #' 
-#' outm <- annual.agg(x,time,index=sprintf("%04d_%02d",lubridate::year(time),lubridate::month(time)))
-#' outmd <- annual.agg(x,time,index=sprintf("%04d_%02d",lubridate::year(time),lubridate::month(time)),aggr.fun=function(l,...) {which.max(l)})
+#' outm <- annual.agg(x,time,index=sprintf("%04d_%02d",lubridate::year(time),
+#' lubridate::month(time)))
+#' outmd <- annual.agg(x,time,index=sprintf("%04d_%02d",lubridate::year(time),
+#' lubridate::month(time)),aggr.fun=function(l,...) {which.max(l)})
 #'
 #' ### intesity greater or equal to 10 mm per day. 
 #' funthres <- function(r,valmin=10,...) {length(which(r>=valmin))}
-#' out_funthres <- annual.agg(x,time,index=sprintf("%04d_%02d",lubridate::year(time),lubridate::month(time)),aggr.fun=funthres)
-#' 
-#' 
+#' out_funthres <- annual.agg(x,time,index=sprintf("%04d_%02d",lubridate::year(time),
+#' lubridate::month(time)),aggr.fun=funthres)
+#' outv_funthres <- annual.agg(x,time,index=sprintf("%04d_%02d",lubridate::year(time),
+#' lubridate::month(time)),aggr.fun=funthres,return_vector=TRUE)
+#' outv_funthres <- monthly.agg(x,time,aggr.fun=funthres,return_vector=TRUE)
+#' out2_funthres <- vec2df(outv_funthres)
 #'
+#' if (!identical(out_funthres,out2_funthres)) stop("Something went wrong!")
 #'
 
 
@@ -136,3 +142,17 @@ yearly.agg <- function(x,time,...) {
   out <- annual.agg(x,time,...)
   return(out)
 }
+
+
+NULL
+#'
+#' @rdname annual.agg
+#' @export
+#' 
+monthly.agg <- function(x,time,index=sprintf("%04d_%02d",lubridate::year(time),lubridate::month(time)),...) {
+  
+  out <- annual.agg(x,time,index=index,...)
+  return(out)
+}
+
+
