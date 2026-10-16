@@ -1,6 +1,6 @@
 # lmomIDF
 
-An R package for getting SoilGrids global maps at 250m resolution. See vignette and/or documentation for further details.
+An R package for getting IDF curves  trough L-Moment method. See vignette and/or documentation for further details.
 
 See vignettes and manual for further details on https://ecor.github.io/lmomIDF/ . 
 
